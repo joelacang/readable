@@ -36,7 +36,9 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "src/features/books/components/book-form-sample",
+    "src/app/(site)/(public)/(store-page)/orders/my-orders"
   ],
   "exclude": ["node_modules"]
 }

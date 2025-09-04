@@ -2,19 +2,700 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    @@index([name])
+  @@index([name])
+}
+
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  role          Role      @default(USER)
+
+  name                  String?
+  displayUsername       String?
+  username              String?
+  Purchase              Purchase[]
+  WishlistItem          WishlistItem[]
+  review                Review[]
+  tagsCreated           Tag[]
+  seriesCreated         Series[]
+  bookSeriesAdded       BookSeries[]
+  booksCreated          Book[]
+  authorsCreated        Author[]
+  categoriesCreated     Category[]
+  collectionsCreated    Collection[]
+  bookTagsCreated       BookTag[]
+  bookAuthorsCreated    BookAuthor[]
+  bookCategoriesCreated BookCategory[]
+  authorSeriesAdded     AuthorSeries[]
+  imageUploader         Image[]
+  bookVariantsCreated   BookVariant[]
+  carts                 Cart[]
+  filesUploaded         BookFile[]
+  cartItems             CartItem[]
+  orders                Order[]
+
+  @@unique([email])
+  @@unique([displayUsername])
+  @@unique([username])
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+  slug        String  @unique
+  code        String  @unique
+  parentId    String?
+  icon        String?
+  color       String?
+
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+
+  isActive        Boolean @default(true)
+  sortOrder       Int     @default(0)
+  metaTitle       String?
+  metaDescription String?
+  imageUrl        String?
+
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
+
+  createdBy User?          @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  books     BookCategory[]
+
+  @@index([slug])
+  @@index([name])
+  @@index([code])
+  @@index([parentId])
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+// E-book Store Book Model
+model Book {
+  id          String  @id @default(cuid())
+  title       String
+  subtitle    String?
+  description String? @db.Text
+  isbn        String?
+  isbn13      String?
+  slug        String  @unique
+  createdById String?
+
+  // Book Details
+  publisher       String?
+  publishedDate   DateTime?
+  language        String?
+  pageCount       Int       @default(0)
+  wordCount       Int       @default(0)
+  readingTime     Int       @default(0)
+  ageRating       String // "G", "PG", "PG-13", "R", "Adult"
+  contentWarnings String[] // comma-separated warnings
+
+  // Status & Availability
+  status        BookStatus @default(DRAFT)
+  isActive      Boolean    @default(true)
+  isFeatured    Boolean    @default(false)
+  isExclusive   Boolean    @default(false) // platform exclusive
+  availableFrom DateTime? // pre-order support
+
+  // Metrics & Analytics
+  viewCount     Int      @default(0)
+  downloadCount Int      @default(0)
+  favoriteCount Int      @default(0)
+  averageRating Decimal? @db.Decimal(3, 2) // 0.00 to 5.00
+  totalRatings  Int      @default(0)
+  totalReviews  Int      @default(0)
+
+  // SEO & Marketing
+  metaTitle       String?
+  metaDescription String?
+  keywords        String[] // searchable keywords
+
+  // Many-to-Many Relations
+  tags        BookTag[]
+  collections BookCollection[]
+  reviews     Review[]
+  purchases   Purchase[]
+  wishlists   WishlistItem[]
+  authors     BookAuthor[]
+  categories  BookCategory[]
+  series      BookSeries[]
+  images      BookImages[]
+  cartItems   CartItem[]
+  variants    BookVariant[]
+
+  createdBy                     User?                @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt                     DateTime             @default(now())
+  updatedAt                     DateTime             @updatedAt
+  sourceBooksForRecommendations BookRecommendation[] @relation("SourceBooksForRecommendation")
+
+  recommendedBooks BookRecommendation[] @relation("RecommendedBooks")
+  orderItems       OrderItem[]
+
+  @@index([title])
+  @@index([status])
+  @@index([isActive])
+  @@index([isFeatured])
+  @@index([publishedDate])
+  @@index([averageRating])
+  @@index([language])
+  @@index([slug])
+}
+
+// Supporting Models
+
+model Author {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  biography       String?   @db.Text
+  profileImageUrl String?
+  website         String?
+  facebook        String?
+  instagram       String?
+  xTwitter        String?
+  tiktok          String?
+  wattpad         String?
+  birthDate       DateTime?
+  nationality     String?
+  isActive        Boolean   @default(true)
+  createdById     String?
+
+  // Metrics
+  followerCount Int @default(0)
+  bookCount     Int @default(0)
+
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  books  BookAuthor[]
+  series AuthorSeries[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([slug])
+  @@index([isActive])
+}
+
+model Image {
+  id           String  @id @default(cuid())
+  name         String?
+  uploadedById String?
+  url          String
+  size         Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  uploader User? @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+
+  books BookImages[]
+
+  @@index([uploadedById])
+}
+
+enum BookFormat {
+  Hardcover
+  Paperback
+  Digital
+}
+
+model BookVariant {
+  id          String     @id @default(cuid())
+  title       String?
+  description String?
+  bookId      String
+  format      BookFormat
+  price       Decimal    @db.Decimal(10, 2)
+  salePrice   Decimal?   @db.Decimal(10, 2)
+  stock       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  createdById String?
+
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  book      Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  files      BookFile[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([bookId])
+  @@index([format])
+}
+
+model BookFile {
+  id           String   @id @default(cuid())
+  name         String
+  type         String
+  size         Int
+  mimeType     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  variantId    String
+  uploadedById String?
+
+  variant    BookVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  uploadedBy User?       @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+}
+
+model BookImages {
+  bookId  String
+  imageId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book  Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  image Image @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+  @@id([bookId, imageId])
+}
+
+model BookAuthor {
+  bookId      String
+  authorId    String
+  createdById String?
+
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book      Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  author    Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdBy User?  @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@id([bookId, authorId])
+}
+
+model BookCategory {
+  bookId      String
+  categoryId  String
+  createdById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  category  Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([bookId, categoryId])
+}
+
+model Series {
+  id            String  @id @default(cuid())
+  title         String
+  slug          String  @unique
+  description   String? @db.Text
+  coverImageUrl String?
+  isActive      Boolean @default(true)
+  isCompleted   Boolean @default(false)
+  createdById   String?
+
+  createdBy User?          @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  // Relations
+  authors   AuthorSeries[]
+
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  BookSeries BookSeries[]
+
+  @@index([title])
+  @@index([slug])
+}
+
+model BookSeries {
+  bookId      String
+  seriesId    String
+  createdById String?
+  seriesOrder Int     @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  book      Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  series    Series @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  createdBy User?  @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@id([bookId, seriesId])
+}
+
+model AuthorSeries {
+  authorId    String
+  seriesId    String
+  createdById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  author    Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  series    Series @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  createdBy User?  @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@id([authorId, seriesId])
+}
+
+model Tag {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  isActive    Boolean @default(true)
+  createdById String?
+
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  books BookTag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+model Collection {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String? @db.Text
+  imageUrl    String?
+  isActive    Boolean @default(true)
+  isFeatured  Boolean @default(false)
+  sortOrder   Int     @default(0)
+  createdById String?
+
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  books BookCollection[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([slug])
+  @@index([isFeatured])
+  @@index([sortOrder])
+}
+
+model Review {
+  id           String  @id @default(cuid())
+  rating       Int // 1-5 stars
+  title        String?
+  content      String? @db.Text
+  isVerified   Boolean @default(false) // verified purchase
+  isApproved   Boolean @default(false)
+  helpfulVotes Int     @default(0)
+
+  // Relations
+  bookId String
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([bookId, userId]) // One review per user per book
+  @@index([bookId])
+  @@index([userId])
+  @@index([rating])
+  @@index([isApproved])
+  @@index([createdAt])
+}
+
+// Junction Tables
+model BookTag {
+  bookId      String
+  tagId       String
+  createdById String?
+
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  book      Book  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  tag       Tag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@id([bookId, tagId])
+}
+
+model BookCollection {
+  bookId       String
+  collectionId String
+  sortOrder    Int    @default(0)
+
+  book       Book       @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@id([bookId, collectionId])
+}
+
+model BookRecommendation {
+  id                String  @id @default(cuid())
+  sourceBookId      String
+  recommendedBookId String
+  score             Decimal @db.Decimal(3, 2) // recommendation strength
+  reason            String? // "customers who bought", "similar genre", etc.
+
+  book            Book @relation("SourceBooksForRecommendation", fields: [sourceBookId], references: [id], onDelete: Cascade)
+  recommendedBook Book @relation("RecommendedBooks", fields: [recommendedBookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([sourceBookId, recommendedBookId])
+  @@index([sourceBookId])
+  @@index([score])
+}
+
+// Enums
+enum BookStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  PUBLISHED
+  ARCHIVED
+  DISCONTINUED
+}
+
+model Purchase {
+  id       String         @id @default(cuid())
+  userId   String
+  bookId   String
+  price    Decimal        @db.Decimal(10, 2)
+  currency String
+  status   PurchaseStatus
+
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([bookId])
+  @@index([status])
+}
+
+model WishlistItem {
+  id     String @id @default(cuid())
+  userId String
+  bookId String
+
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, bookId])
+  @@index([userId])
+}
+
+model Cart {
+  id     String @id @default(cuid())
+  userId String @unique
+  name   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@index([userId])
+}
+
+model CartItem {
+  id          String @id @default(cuid())
+  cartId      String
+  bookId      String
+  variantId   String
+  quantity    Int    @default(1)
+  createdById String
+
+  cart      Cart        @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  book      Book        @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  variant   BookVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  createdBy User        @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, variantId])
+  @@index([cartId])
+  @@index([createdById])
+}
+
+enum PurchaseStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model Order {
+  id                    String   @id @default(cuid())
+  refCode               String   @unique
+  stripeSessionId       String   @unique
+  stripePaymentIntentId String?  @unique // Optional: can be pulled from the session
+  totalAmount           Decimal
+  subTotal              Decimal
+  shippingFee           Decimal?
+  taxAmount             Decimal?
+  discount              Decimal?
+  currency              String   @default("usd")
+
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // Payment Details
+  paymentMethodType String? // e.g. "card"
+  paymentLast4      String? // e.g. "4242"
+  paymentBrand      String? // e.g. "visa"
+  receiptUrl        String?
+  paymentStatus     String
+
+  //Customer 
+  userId           String
+  stripeCustomerId String?
+  customerName     String
+  customerEmail    String?
+
+  // Shipping Details
+  shippingName    String?
+  shippingPhone   String?
+  shippingEmail   String?
+  shippingLine1   String?
+  shippingLine2   String?
+  shippingCity    String?
+  shippingState   String?
+  shippingPostal  String?
+  shippingCountry String?
+
+  note String? @db.VarChar(500)
+
+  trackingNumber String?   @unique // Optional: once shipped
+  shippedAt      DateTime?
+  deliveredAt    DateTime?
+
+  customer User?       @relation(fields: [userId], references: [id])
+  items    OrderItem[]
+
+  @@index([trackingNumber])
+  @@index([shippingName])
+  @@index([shippingEmail])
+  @@index([userId, status])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([customerEmail])
+  @@index([customerName])
+  @@index([shippingPostal])
+  @@index([refCode])
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELED
+  REFUNDED
+  IN_TRANSIT
+}
+
+model OrderItem {
+  id        String      @id @default(cuid())
+  orderId   String
+  bookId    String?
+  variantId String?
+  name      String
+  price     Decimal
+  imageUrls String[]
+  format    BookFormat?
+  quantity  Int
+  subTotal  Decimal
+  createdAt DateTime    @default(now())
+
+  book    Book?        @relation(fields: [bookId], references: [id], onDelete: NoAction)
+  variant BookVariant? @relation(fields: [variantId], references: [id], onDelete: NoAction)
+  order   Order        @relation(fields: [orderId], references: [id], onDelete: NoAction)
+
+  @@index([orderId])
+  @@index([bookId])
+  @@index([variantId])
 }

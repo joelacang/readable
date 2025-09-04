@@ -1,5 +1,17 @@
 import { postRouter } from "~/server/api/routers/post";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { userRouter } from "./routers/user";
+import { categoryRouter } from "./routers/category";
+import { authorRouter } from "./routers/author";
+import { seriesRouter } from "./routers/series";
+import { collectionRouter } from "./routers/collection";
+import { tagRouter } from "./routers/tag";
+import { bookRouter } from "./routers/book";
+import { imageRouter } from "./routers/image";
+import { cartRouter } from "./routers/cart";
+import { wishlistRouter } from "./routers/wishlist";
+import { checkoutRouter } from "./routers/checkout";
+import { orderRouter } from "./routers/order";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +20,18 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   post: postRouter,
+  user: userRouter,
+  author: authorRouter,
+  category: categoryRouter,
+  series: seriesRouter,
+  collection: collectionRouter,
+  tag: tagRouter,
+  book: bookRouter,
+  image: imageRouter,
+  cart: cartRouter,
+  wishlist: wishlistRouter,
+  checkout: checkoutRouter,
+  order: orderRouter,
 });
 
 // export type definition of API

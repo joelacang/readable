@@ -6,9 +6,12 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import type { Role } from "@prisma/client";
+import { initTRPC, TRPCError } from "@trpc/server";
+import { headers } from "next/headers";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { auth } from "~/lib/auth";
 
 import { db } from "~/server/db";
 
@@ -25,8 +28,13 @@ import { db } from "~/server/db";
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   return {
     db,
+    session,
     ...opts,
   };
 };
@@ -104,3 +112,54 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
+export const protectedProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(async ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You must be logged in to access this resource.",
+      });
+    }
+
+    const user = await ctx.db.user.findUnique({
+      where: { id: ctx.session.user.id },
+      select: {
+        role: true,
+      },
+    });
+
+    if (!user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You must be logged in to access this resource.",
+      });
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        session: {
+          ...ctx.session,
+          user: {
+            ...ctx.session.user,
+            role: user.role,
+          },
+        },
+      },
+    });
+  });
+
+export const hasRoleProcedure = (role: Role) =>
+  protectedProcedure.use(async ({ ctx, next }) => {
+    if (ctx.session.user.role !== role) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: `You must be a ${role} to access this procedure.`,
+      });
+    }
+    return next();
+  });
+
+export const adminProcedure = hasRoleProcedure("ADMIN");
+export const moderatorProcedure = hasRoleProcedure("MODERATOR");
