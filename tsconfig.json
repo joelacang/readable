@@ -39,7 +39,7 @@
     ".next/types/**/*.ts",
     "src/features/books/components/book-form-sample",
     "src/app/(site)/(public)/(store-page)/orders/my-orders",
-    "src/mock-data/.users.ts"
+    "mock-data/.users.ts"
   ],
   "exclude": ["node_modules"]
 }

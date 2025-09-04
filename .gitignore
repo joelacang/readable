@@ -46,4 +46,4 @@ yarn-error.log*
 .idea
 
 #mock-data
-/src/mock-data
+/mock-data
