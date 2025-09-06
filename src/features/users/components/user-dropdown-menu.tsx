@@ -34,7 +34,6 @@ const UserDropdownMenu = () => {
   const { loggedUser: user, removeLoggedUser, isLoading } = useLoggedUser();
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
-  const { onOpen: openCategoryDialog } = useCategoryDialog();
   const pathname = usePathname();
 
   if (!user) {
@@ -71,19 +70,19 @@ const UserDropdownMenu = () => {
       label: "My Library",
       icon: LibraryIcon,
       hasUpperSeparator: true,
-      action: () => router.push(`/orders/my-orders`),
+      action: () => router.push(`/user/orders/my-orders`),
     },
     {
       name: "my-orders",
       label: "My Orders",
       icon: ListIcon,
-      action: () => router.push(`/orders/my-orders`),
+      action: () => router.push(`/user/orders/my-orders`),
     },
     {
       name: "my-reviews",
       label: "My Reviews",
       icon: MessageCircleIcon,
-      action: () => router.push(`/orders/my-orders`),
+      action: () => router.push(`/user/reviews/my-reviews`),
     },
     {
       name: "profile",

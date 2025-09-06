@@ -52,7 +52,7 @@ const BookDetails = () => {
           <DetailInfo
             title="Tags"
             description={
-              <div className="flex space-x-2">
+              <div className="flex flex-wrap gap-2 py-1">
                 {book.tags.map((t) => (
                   <Badge key={t.id}>#{t.name}</Badge>
                 ))}

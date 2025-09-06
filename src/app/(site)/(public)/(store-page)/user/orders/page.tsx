@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Loading from "~/components/loading";
 import MessageBox from "~/components/message-box";
 import OrderDetails from "~/features/orders/order-details";
+import PageHeader from "~/features/page/components/page-header";
 import { api } from "~/trpc/react";
 import { ConfirmationType } from "~/types/component";
 
@@ -54,7 +55,15 @@ const OrderDetailsPage = () => {
     </div>;
   }
 
-  return <div>{order && <OrderDetails order={order} />}</div>;
+  return (
+    <div>
+      <PageHeader
+        title="Order Detail"
+        description={`Order Information for Order Ref. Code: ${refCode}`}
+      />
+      {order && <OrderDetails order={order} />}
+    </div>
+  );
 };
 
 export default OrderDetailsPage;

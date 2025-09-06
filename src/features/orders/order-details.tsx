@@ -40,7 +40,7 @@ const OrderDetails = ({ order }: Props) => {
               <DetailInfo
                 title="Order Reference Code"
                 description={
-                  <p className="text-primary text-sm font-semibold">
+                  <p className="text-sm font-semibold text-blue-500">
                     {order.refCode}
                   </p>
                 }
@@ -84,7 +84,8 @@ const OrderDetails = ({ order }: Props) => {
                     {order.shippingInfo?.email}
                   </p>
                   {order.shippingInfo?.address && (
-                    <p className="text-muted-foreground">
+                    <p className="text-muted-foreground flex items-start gap-2">
+                      <MapPinIcon className="h-4 w-4 shrink-0" />
                       {formatAddress(order.shippingInfo?.address)}
                     </p>
                   )}

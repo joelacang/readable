@@ -121,3 +121,12 @@ export enum AdminView {
   PRICING = "pricing",
   SETTINGS = "settings",
 }
+
+export enum UserView {
+  HOME = "home",
+  LIBRARY = "library",
+  READLIST = "readlist",
+  ORDERS = "orders",
+  REVIEWS = "reviews",
+  SETTINGS = "settings",
+}

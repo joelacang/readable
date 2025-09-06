@@ -60,12 +60,22 @@ const AddToCartForm = ({ book, mode = "dialog" }: Props) => {
     name: "variantId",
   });
 
+  const currentQuantity = useWatch({
+    control: form.control,
+    name: "quantity",
+  });
+
   useEffect(() => {
     setCurrentVariant(
       book.variants.find((v) => v.id === selectedVariantId) ?? null,
     );
   }, [selectedVariantId, book]);
 
+  useEffect(() => {
+    if (currentVariant?.format === "Digital") {
+      form.setValue("quantity", 1);
+    }
+  }, [currentVariant]);
   const onSubmit = (values: z.infer<typeof addToCartSchema>) => {
     onAddingToCart();
     addToCart(
@@ -175,32 +185,45 @@ const AddToCartForm = ({ book, mode = "dialog" }: Props) => {
                 </FormItem>
               )}
             />
-            {currentVariant?.format !== "Digital" && (
-              <FormField
-                name="quantity"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex flex-col gap-2">
-                      <FormLabel> Quantity:</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step={1}
-                          {...field}
-                          min={1}
-                          max={currentVariant?.stock ?? 0}
-                          className="w-24"
-                          disabled={isPending}
-                        />
-                      </FormControl>
-                    </div>
+            <div>
+              {currentVariant?.format !== "Digital" && (
+                <FormField
+                  name="quantity"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex flex-col gap-2">
+                        <FormLabel> Quantity:</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step={1}
+                            {...field}
+                            min={1}
+                            max={currentVariant?.stock ?? 0}
+                            className="w-24"
+                            disabled={isPending}
+                          />
+                        </FormControl>
+                      </div>
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              <div className="flex flex-row items-center gap-2 pt-6">
+                <p className="text-sm font-medium">Total Price:</p>
+                <p className="text-2xl font-semibold">
+                  {currentVariant?.price && currentQuantity
+                    ? new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      }).format(currentVariant.price * currentQuantity)
+                    : "$0.00"}
+                </p>
+              </div>
+            </div>
           </div>
 
           {mode === "dialog" && (

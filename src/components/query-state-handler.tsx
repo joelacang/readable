@@ -19,37 +19,52 @@ export function QueryStateHandler<T>({
   children,
 }: QueryStateHandlerProps<T>) {
   if (isLoading) {
-    return (
-      <Centered>
-        <Loading label={loadingLabel} />
-      </Centered>
-    );
+    if (typeof loadingLabel === "string") {
+      return (
+        <Centered>
+          <Loading label={loadingLabel} />
+        </Centered>
+      );
+    } else {
+      return loadingLabel;
+    }
   }
 
   if (isError) {
-    return (
-      <Centered>
-        <MessageBox
-          title={errorTitle ?? "An error occurred."}
-          description={errorMessage ?? "Something went wrong."}
-          icon={TriangleAlertIcon}
-          mode={ConfirmationType.ERROR}
-        />
-      </Centered>
-    );
+    if (errorTitle || errorMessage) {
+      return (
+        <Centered>
+          <MessageBox
+            title={errorTitle ?? "An error occured"}
+            description={
+              errorMessage ?? "Something went wrong. Please try again."
+            }
+            icon={TriangleAlertIcon}
+            mode={ConfirmationType.ERROR}
+          />
+        </Centered>
+      );
+    } else {
+      return null;
+    }
   }
 
   if (!data) {
-    return (
-      <Centered>
-        <MessageBox
-          title={emptyTitle ?? "No Data Found."}
-          description={emptyDescription}
-          icon={SearchXIcon}
-          mode={ConfirmationType.DEFAULT}
-        />
-      </Centered>
-    );
+    if (emptyDescription || emptyTitle) {
+      return (
+        <Centered>
+          <MessageBox
+            title={emptyTitle ?? "No Data Found."}
+            description={emptyDescription}
+            icon={SearchXIcon}
+            mode={ConfirmationType.DEFAULT}
+          />
+        </Centered>
+      );
+    } else {
+      return null;
+    }
   }
+
   return <div className="w-full">{children(data)}</div>;
 }

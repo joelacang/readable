@@ -38,7 +38,7 @@
     "**/*.js",
     ".next/types/**/*.ts",
     "src/features/books/components/book-form-sample",
-    "src/app/(site)/(public)/(store-page)/orders/my-orders",
+    "src/app/(site)/(public)/(store-page)/user/orders/my-orders",
     "mock-data/.users.ts"
   ],
   "exclude": ["node_modules"]

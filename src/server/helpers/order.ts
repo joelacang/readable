@@ -4,6 +4,7 @@ import { stripe } from "~/utils/stripe";
 import { TRPCError } from "@trpc/server";
 import { generateId } from "~/utils/get-values";
 import type { OrderPreviewType } from "~/types/order";
+import { CarTaxiFront } from "lucide-react";
 
 export interface ExtendedStripeSession extends Stripe.Checkout.Session {
   shipping_details?: {
@@ -100,6 +101,7 @@ export async function createOrder({
       format: product.metadata.format! as BookFormat,
       quantity: item.quantity ?? 1,
       subTotal: item.amount_subtotal / 100,
+      orderedById: session.metadata?.userId,
     };
   });
 

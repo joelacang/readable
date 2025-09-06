@@ -66,7 +66,7 @@ export type QueryStateHandlerProps<T> = {
   isLoading: boolean;
   isError: boolean;
   data: T | undefined | null;
-  loadingLabel?: string;
+  loadingLabel?: string | React.ReactNode | null;
   emptyTitle?: string;
   emptyDescription?: string;
   errorTitle?: string;

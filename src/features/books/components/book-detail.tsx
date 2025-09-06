@@ -14,7 +14,7 @@ import { useState } from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
-import { Reviews } from "~/features/reviews/components/reviews";
+import { ReviewsCard } from "~/features/reviews/components/book-reviews-card";
 import type { BookDetailType } from "~/types/book";
 import AddToCartForm from "~/features/cart/components/add-to-cart-form";
 import WishlistToggleButton from "~/features/wishlist/components/wishlist-toggle-button";
@@ -41,7 +41,7 @@ const BookDetail = ({ book }: BookDetailPageProps) => {
 
   return (
     <div className="flex w-full items-center justify-center p-4">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Left Column - Book Cover and Gallery */}
         <div className="flex h-fit flex-col items-center justify-center space-y-6 lg:col-span-1">
           {coverImage ? (
@@ -80,7 +80,7 @@ const BookDetail = ({ book }: BookDetailPageProps) => {
         </div>
 
         {/* Right Column - Book Details */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="w-full space-y-6 lg:col-span-2">
           {/* Header Section */}
           <div className="space-y-4">
             <div className="flex items-start justify-between">
@@ -282,7 +282,7 @@ const BookDetail = ({ book }: BookDetailPageProps) => {
           </Card>
 
           {/* Reviews Section */}
-          <Reviews />
+          <ReviewsCard bookId={book.id} />
         </div>
       </div>
     </div>

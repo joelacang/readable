@@ -60,6 +60,7 @@ model User {
   filesUploaded         BookFile[]
   cartItems             CartItem[]
   orders                Order[]
+  OrderItem             OrderItem[]
 
   @@unique([email])
   @@unique([displayUsername])
@@ -455,30 +456,41 @@ model Collection {
 }
 
 model Review {
-  id           String  @id @default(cuid())
+  id           String       @id @default(cuid())
   rating       Int // 1-5 stars
   title        String?
-  content      String? @db.Text
-  isVerified   Boolean @default(false) // verified purchase
-  isApproved   Boolean @default(false)
-  helpfulVotes Int     @default(0)
+  content      String?      @db.Text
+  status       ReviewStatus @default(PUBLISHED)
+  helpfulVotes Int          @default(0)
 
   // Relations
-  bookId String
-  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId String?
+  book   Book?   @relation(fields: [bookId], references: [id], onDelete: SetNull)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([bookId, userId]) // One review per user per book
+  @@unique([orderItemId, userId]) //One user per one Order Item
   @@index([bookId])
   @@index([userId])
   @@index([rating])
-  @@index([isApproved])
   @@index([createdAt])
+  @@index([bookId, status])
+  @@index([status])
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  PUBLISHED
+  HIDDEN
+  FLAGGED
 }
 
 // Junction Tables
@@ -676,24 +688,29 @@ enum OrderStatus {
   CANCELED
   REFUNDED
   IN_TRANSIT
+  DELIVERED
 }
 
 model OrderItem {
-  id        String      @id @default(cuid())
-  orderId   String
-  bookId    String?
-  variantId String?
-  name      String
-  price     Decimal
-  imageUrls String[]
-  format    BookFormat?
-  quantity  Int
-  subTotal  Decimal
-  createdAt DateTime    @default(now())
+  id          String      @id @default(cuid())
+  orderId     String
+  bookId      String?
+  variantId   String?
+  name        String
+  price       Decimal
+  imageUrls   String[]
+  format      BookFormat?
+  quantity    Int
+  subTotal    Decimal
+  createdAt   DateTime    @default(now())
+  orderedById String?
 
-  book    Book?        @relation(fields: [bookId], references: [id], onDelete: NoAction)
-  variant BookVariant? @relation(fields: [variantId], references: [id], onDelete: NoAction)
-  order   Order        @relation(fields: [orderId], references: [id], onDelete: NoAction)
+  reviews Review[]
+
+  book      Book?        @relation(fields: [bookId], references: [id], onDelete: NoAction)
+  variant   BookVariant? @relation(fields: [variantId], references: [id], onDelete: NoAction)
+  order     Order        @relation(fields: [orderId], references: [id], onDelete: NoAction)
+  orderedBy User?        @relation(fields: [orderedById], references: [id], onDelete: SetNull)
 
   @@index([orderId])
   @@index([bookId])

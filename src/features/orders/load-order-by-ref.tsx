@@ -25,7 +25,15 @@ const LoadOrderByRef = ({ ref }: Props) => {
       emptyTitle="No Order Found."
       emptyDescription={`No Order Found for ref#: ${ref}`}
     >
-      {(order) => <OrderDetails order={order} />}
+      {(order) => (
+        <div className="flex flex-col">
+          <p className="text-muted-foreground pb-2 font-mono text-sm font-medium">
+            Order Detail for Order Ref. #:&nbsp;
+            <span className="font-semibold text-blue-500">{ref}</span>
+          </p>
+          <OrderDetails order={order} />
+        </div>
+      )}
     </QueryStateHandler>
   );
 };
