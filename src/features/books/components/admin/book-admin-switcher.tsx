@@ -7,8 +7,11 @@ import { ReviewsCard } from "~/features/reviews/components/book-reviews-card";
 import { useBook } from "~/providers/book-provider";
 import { AdminView } from "~/types/book";
 
-const BookAdminSwitcher = () => {
-  const { book, view } = useBook();
+interface Props {
+  view: AdminView;
+}
+const BookAdminSwitcher = ({ view }: Props) => {
+  const { book } = useBook();
 
   switch (view) {
     case AdminView.ORDERS:

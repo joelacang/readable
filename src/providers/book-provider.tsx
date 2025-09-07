@@ -5,11 +5,9 @@ import type React from "react";
 import { createContext, useContext, useState } from "react";
 import { QueryStateHandler } from "~/components/query-state-handler";
 import { api } from "~/trpc/react";
-import { AdminView, type BookDetailType } from "~/types/book";
+import { type BookDetailType } from "~/types/book";
 
 type BookContextType = {
-  view: AdminView;
-  setView: (view: AdminView) => void;
   book: BookDetailType;
   currentOrderRef: string | null;
   setCurrentOrderRef: (ref: string | null) => void;
@@ -43,7 +41,6 @@ export const BookProvider = ({ children }: Props) => {
     { enabled: !!bookSlug },
   );
 
-  const [view, setView] = useState<AdminView>(AdminView.OVERVIEW);
   const [currentOrderRef, setCurrentOrderRef] = useState<string | null>(null);
 
   return (
@@ -58,7 +55,7 @@ export const BookProvider = ({ children }: Props) => {
     >
       {(book) => (
         <BookContext.Provider
-          value={{ view, setView, currentOrderRef, setCurrentOrderRef, book }}
+          value={{ currentOrderRef, setCurrentOrderRef, book }}
         >
           {children}
         </BookContext.Provider>

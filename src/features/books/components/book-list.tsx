@@ -3,7 +3,7 @@
 import { TriangleAlertIcon } from "lucide-react";
 import MessageBox from "~/components/message-box";
 import { api } from "~/trpc/react";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 import BookListItem from "./book-list-item";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -115,7 +115,7 @@ const BookList = ({ catIdProp }: Props) => {
         title="Error Loading Books"
         description={error.message}
         icon={TriangleAlertIcon}
-        mode={ConfirmationType.ERROR}
+        mode={ModeType.ERROR}
       />
     );
   }
@@ -127,7 +127,7 @@ const BookList = ({ catIdProp }: Props) => {
           title="No Books Found"
           description={`No Books Found ${data?.categoryName && " for the category: '" + data.categoryName}' .`}
           icon={TriangleAlertIcon}
-          mode={ConfirmationType.DEFAULT}
+          mode={ModeType.DEFAULT}
         />
       </div>
     );

@@ -1,19 +1,25 @@
 import { ChevronRightCircleIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Card, CardContent } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
+import { useBook } from "~/providers/book-provider";
 import type { OrderPreviewType } from "~/types/order";
 import { getStatusStyles } from "~/utils/get-values";
 
 interface Props {
   order: OrderPreviewType;
-  onChangeOrder: (ref: string) => void;
 }
-const OrderPreviewCard = ({ order, onChangeOrder }: Props) => {
+const OrderPreviewCard = ({ order }: Props) => {
+  const router = useRouter();
+  const { book } = useBook();
+
   return (
     <Card
       className="shadow-primary w-full cursor-pointer transition-shadow duration-200 hover:shadow-md"
-      onClick={() => onChangeOrder(order.refCode)}
+      onClick={() =>
+        router.push(`/admin/books/${book.slug}/orders/${order.refCode}`)
+      }
     >
       <CardContent className="">
         <div className="flex flex-col items-start justify-between gap-4">

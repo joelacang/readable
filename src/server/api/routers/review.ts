@@ -227,4 +227,61 @@ export const reviewRouter = createTRPCRouter({
 
       return reviews;
     }),
+
+  getReviewStats: publicProcedure
+    .input(z.object({ bookId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const ratingStats = await ctx.db.review.aggregate({
+        where: {
+          bookId: input.bookId,
+          status: "PUBLISHED",
+        },
+        _avg: {
+          rating: true,
+        },
+        _count: {
+          rating: true,
+        },
+      });
+
+      const ratingsBreakdown = await ctx.db.review.groupBy({
+        by: ["rating"],
+        where: {
+          bookId: input.bookId,
+          status: "PUBLISHED",
+        },
+        _count: {
+          rating: true,
+        },
+        orderBy: {
+          rating: "asc",
+        },
+      });
+
+      // Create a map from raw results for easier lookup
+      const ratingMap = new Map<number, number>();
+      ratingsBreakdown.forEach((r) => {
+        ratingMap.set(r.rating, r._count.rating);
+      });
+
+      // Ensure all ratings 1 through 5 are included
+      const fullBreakdown = Array.from({ length: 5 }, (_, i) => {
+        const stars = 5 - i;
+        const count = ratingMap.get(stars) ?? 0;
+        return {
+          stars,
+          count,
+          percent:
+            ratingStats._count.rating > 0
+              ? (count / ratingStats._count.rating) * 100
+              : 0,
+        };
+      });
+
+      return {
+        averageRating: ratingStats._avg.rating ?? 0,
+        totalRatings: ratingStats._count.rating,
+        ratingsBreakdown: fullBreakdown,
+      };
+    }),
 });

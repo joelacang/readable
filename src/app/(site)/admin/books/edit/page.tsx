@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import MessageBox from "~/components/message-box";
 import EditBook from "~/features/books/components/admin/edit-book";
 import Centered from "~/features/page/components/centered";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 
 const EditBookPage = () => {
   const searchParam = useSearchParams();
@@ -17,7 +17,7 @@ const EditBookPage = () => {
         <MessageBox
           title="Missing Information"
           description="No BookId."
-          mode={ConfirmationType.ERROR}
+          mode={ModeType.ERROR}
           icon={TriangleAlertIcon}
         />
       </Centered>

@@ -2,7 +2,7 @@ import { Loader2Icon, SearchXIcon, TriangleAlertIcon } from "lucide-react";
 import Loading from "~/components/loading";
 import MessageBox from "~/components/message-box";
 import { api } from "~/trpc/react";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 import CartItem from "./cart-item";
 import { formatPrice } from "~/utils/get-values";
 import { SheetFooter } from "~/components/ui/sheet";
@@ -53,7 +53,7 @@ const CartItems = () => {
         title="Error Loading Cart."
         description={error.message}
         icon={TriangleAlertIcon}
-        mode={ConfirmationType.ERROR}
+        mode={ModeType.ERROR}
         isCompact
       />
     );
@@ -65,7 +65,7 @@ const CartItems = () => {
         title="No Cart Found"
         description="No cart has been found in your account."
         icon={TriangleAlertIcon}
-        mode={ConfirmationType.ERROR}
+        mode={ModeType.ERROR}
         isCompact
       />
     );
@@ -77,7 +77,7 @@ const CartItems = () => {
         title="No Items On Your Cart"
         description="Sorry, there are no items in your cart."
         icon={SearchXIcon}
-        mode={ConfirmationType.DEFAULT}
+        mode={ModeType.DEFAULT}
         isCompact
       />
     );

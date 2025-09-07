@@ -1,10 +1,10 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowRightIcon, CheckCircle2Icon } from "lucide-react";
 import Link from "next/link";
 import Hint from "~/components/hint";
 import { QueryStateHandler } from "~/components/query-state-handler";
-import { buttonVariants } from "~/components/ui/button";
+import { Button, buttonVariants } from "~/components/ui/button";
 import OrderItem from "~/features/orders/order-item";
 import PageHeader from "~/features/page/components/page-header";
 import { cn } from "~/lib/utils";

@@ -9,7 +9,7 @@ import {
 import { Skeleton } from "~/components/ui/skeleton";
 import CategoryMenuItem from "~/features/categories/components/category-menu-item";
 import { api } from "~/trpc/react";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 import CategoryMenu from "./category-menu";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
@@ -48,7 +48,7 @@ const CategoryMenus = ({ childCategory = false }: Props) => {
         title="Error loading categories."
         description={error.message}
         icon={TriangleAlertIcon}
-        mode={ConfirmationType.ERROR}
+        mode={ModeType.ERROR}
         isCompact
       />
     );

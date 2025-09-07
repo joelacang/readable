@@ -20,11 +20,12 @@ export type MenuItemType = {
   color?: string;
 };
 
-export enum ConfirmationType {
+export enum ModeType {
   SUCCESS = "success",
   ERROR = "error",
   INFO = "info",
   DEFAULT = "default",
+  WARNING = "warning",
 }
 export enum Size {
   XSMALL,

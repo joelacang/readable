@@ -1,5 +1,5 @@
 "use client";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 import MessageBox from "~/components/message-box";
 import { HomeIcon, LockIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -39,7 +39,7 @@ const AdminPageAuthCheck = ({ children }: Props) => {
         <MessageBox
           title="Something went wrong."
           description={error.message}
-          mode={ConfirmationType.ERROR}
+          mode={ModeType.ERROR}
           icon={LockIcon}
         >
           <div className="flex items-center justify-center">
@@ -58,7 +58,7 @@ const AdminPageAuthCheck = ({ children }: Props) => {
         <MessageBox
           title="Unauthorized"
           description="Access Denied: You must be an admin to view this page."
-          mode={ConfirmationType.ERROR}
+          mode={ModeType.ERROR}
           icon={LockIcon}
         >
           <div className="flex items-center justify-center">

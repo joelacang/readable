@@ -7,7 +7,7 @@ import MessageBox from "~/components/message-box";
 import OrderDetails from "~/features/orders/order-details";
 import PageHeader from "~/features/page/components/page-header";
 import { api } from "~/trpc/react";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 
 const OrderDetailsPage = () => {
   const searchParams = useSearchParams();
@@ -37,7 +37,7 @@ const OrderDetailsPage = () => {
         <MessageBox
           title="Error loading order"
           description={error.message}
-          mode={ConfirmationType.ERROR}
+          mode={ModeType.ERROR}
           icon={TriangleAlertIcon}
         />
       </div>
@@ -49,7 +49,7 @@ const OrderDetailsPage = () => {
       <MessageBox
         title="Order not found"
         description={`Order with reference code: ${refCode} not found. Please try again.`}
-        mode={ConfirmationType.ERROR}
+        mode={ModeType.ERROR}
         icon={SearchXIcon}
       />
     </div>;

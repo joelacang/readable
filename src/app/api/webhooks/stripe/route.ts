@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type Stripe from "stripe";
 import { db } from "~/server/db";
 import { clearCart } from "~/server/helpers/cart";
+import { handleCheckoutComplete } from "~/server/helpers/checkout";
 import {
   createOrder,
   type ExtendedStripeSession,
@@ -24,8 +25,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Webhook Error" }, { status: 400 });
   }
 
+  let session: ExtendedStripeSession;
+
+  try {
+    switch (event.type) {
+      case "checkout.session.completed": {
+        const session = event.data.object;
+        const orderId = await handleCheckoutComplete(session);
+        break;
+      }
+      case "payment_intent.succeeded": {
+        const paymentIntent = event.data.object;
+      }
+      default:
+        break;
+    }
+  } catch (error) {}
+
   if (event.type === "checkout.session.completed") {
-    const session: ExtendedStripeSession = event.data.object;
+    session = event.data.object;
     const userId = session.metadata?.userId;
     const cartId = session.metadata?.cartId;
 

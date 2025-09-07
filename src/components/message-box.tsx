@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import React, { type HTMLProps } from "react";
 import { cn } from "~/lib/utils";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 
 export type StatusColorType = {
   bg: string;
@@ -16,7 +16,7 @@ interface MessageBoxProps extends HTMLProps<HTMLDivElement> {
   description?: string;
   children?: React.ReactNode;
   icon?: LucideIcon;
-  mode?: ConfirmationType;
+  mode?: ModeType;
   isCompact?: boolean;
   className?: string;
 }
@@ -25,13 +25,13 @@ const MessageBox = ({
   description,
   children,
   icon: Icon,
-  mode = ConfirmationType.DEFAULT,
+  mode = ModeType.DEFAULT,
   isCompact = false,
   className = "",
   ...props
 }: MessageBoxProps) => {
   // Define mode-specific styles
-  const modeStyles: Record<ConfirmationType, StatusColorType> = {
+  const modeStyles: Record<ModeType, StatusColorType> = {
     success: {
       bg: "bg-green-50",
       border: "border-green-200",

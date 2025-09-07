@@ -4,7 +4,7 @@ import { SearchXIcon, TriangleAlertIcon } from "lucide-react";
 import Loading from "~/components/loading";
 import MessageBox from "~/components/message-box";
 import { api } from "~/trpc/react";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 import { OrdersDataTable } from "./table/data-table";
 import { orderColumns } from "./table/columns";
 
@@ -29,7 +29,7 @@ const UserOrders = ({ userId = null }: Props) => {
         title="Error loading orders."
         description={error.message}
         icon={TriangleAlertIcon}
-        mode={ConfirmationType.ERROR}
+        mode={ModeType.ERROR}
       />
     );
   }
@@ -40,7 +40,7 @@ const UserOrders = ({ userId = null }: Props) => {
         title="No orders found."
         description={`Sorry, we can't find any orders.`}
         icon={SearchXIcon}
-        mode={ConfirmationType.DEFAULT}
+        mode={ModeType.DEFAULT}
       />
     );
   }

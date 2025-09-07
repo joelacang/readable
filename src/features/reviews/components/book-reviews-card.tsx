@@ -20,8 +20,6 @@ interface Props {
 export function ReviewsCard({ bookId }: Props) {
   const [sortBy, setSortBy] = useState("newest");
 
-  const averageRating = 4.6;
-
   return (
     <Card>
       <CardHeader>
@@ -29,7 +27,7 @@ export function ReviewsCard({ bookId }: Props) {
       </CardHeader>
       <CardContent className="w-full space-y-6">
         {/* Rating Summary */}
-        <ReviewSummary />
+        <ReviewSummary bookId={bookId} />
 
         {/* Action Buttons */}
 

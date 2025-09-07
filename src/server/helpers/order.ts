@@ -3,8 +3,7 @@ import type Stripe from "stripe";
 import { stripe } from "~/utils/stripe";
 import { TRPCError } from "@trpc/server";
 import { generateId } from "~/utils/get-values";
-import type { OrderPreviewType } from "~/types/order";
-import { CarTaxiFront } from "lucide-react";
+import type { OrderPreviewType, PaymentDetailsType } from "~/types/order";
 
 export interface ExtendedStripeSession extends Stripe.Checkout.Session {
   shipping_details?: {
@@ -25,9 +24,11 @@ export interface ExtendedStripeSession extends Stripe.Checkout.Session {
 export async function createOrder({
   session,
   transaction,
+  paymentDetails,
 }: {
   session: ExtendedStripeSession;
   transaction: Prisma.TransactionClient;
+  paymentDetails?: PaymentDetailsType | null;
 }): Promise<{ orderId: string }> {
   const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
     expand: [`data.price.product`],
@@ -61,6 +62,8 @@ export async function createOrder({
 
       paymentMethodType: session.payment_method_types?.[0],
       paymentStatus: session.payment_status,
+      paymentBrand: paymentDetails?.brand,
+      paymentLast4: paymentDetails?.last4,
 
       userId: session.metadata.userId,
       customerName: session.metadata.name ?? customerDetails?.name ?? "",

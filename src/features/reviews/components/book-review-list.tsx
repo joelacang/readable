@@ -1,6 +1,7 @@
 import { QueryStateHandler } from "~/components/query-state-handler";
 import { api } from "~/trpc/react";
 import ReviewCard from "./review-card";
+import ReviewCardSkeleton from "./review-card-skeleton";
 
 interface Props {
   bookId: string;
@@ -19,7 +20,7 @@ const BookReviewList = ({ bookId, compact }: Props) => {
       data={reviews}
       isLoading={isLoading}
       isError={isError}
-      loadingLabel="Loading Reviews..."
+      loadingLabel={<ReviewCardSkeleton />}
       errorTitle="Error Loading Reviews"
       errorMessage={error?.message ?? "Unknown Error Occurred."}
       emptyTitle="No Reviews Found"
@@ -32,6 +33,7 @@ const BookReviewList = ({ bookId, compact }: Props) => {
               key={review.id}
               review={review}
               hideHelpfulBar={compact}
+              mode="book"
             />
           ))}
         </div>

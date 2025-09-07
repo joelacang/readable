@@ -25,8 +25,11 @@ import {
   ArrowRightIcon,
   CheckCircle2Icon,
   CheckIcon,
+  Divide,
   Loader2Icon,
 } from "lucide-react";
+import Toast from "~/components/toast";
+import { ModeType } from "~/types/component";
 
 interface Props {
   orderItem: OrderItemType;
@@ -52,30 +55,16 @@ const ReviewForm = ({ orderItem }: Props) => {
     createReview(values, {
       onSuccess: (response) => {
         toast.custom(() => (
-          <div className="bg-card flex max-w-md flex-row gap-3 rounded-lg p-4">
-            <div className="py-2">
-              <CheckCircle2Icon className="h-8 w-8 text-green-500" />
-            </div>
-
-            <div className="flex w-full flex-col gap-4">
-              <div className="flex flex-col">
-                <h3 className="text-base font-semibold">Review submitted.</h3>
-                <p className="text-muted-foreground text-sm">
-                  Your review:&nbsp;&apos;
-                  <span className="font-mono font-semibold">
-                    {response.title}
-                  </span>
-                  &apos;&nbsp;was successfully created.
-                </p>
-              </div>
-
-              <div className="flex w-full items-center justify-end">
-                <Button>
-                  Go To Review <ArrowRightIcon />
-                </Button>
-              </div>
-            </div>
-          </div>
+          <Toast
+            title="Review submitted."
+            message={`Your review for the book: ${response.title} has been submitted successfully`}
+            mode={ModeType.SUCCESS}
+            footer={
+              <Button>
+                Go To Review <ArrowRightIcon />
+              </Button>
+            }
+          />
         ));
 
         onClose();

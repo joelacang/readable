@@ -1,5 +1,6 @@
 import { BookIcon, type LucideIcon } from "lucide-react";
 import {
+  ModeType,
   Size,
   type FormIdentityType,
   type MenuItemType,
@@ -263,5 +264,53 @@ export const AdminViewDetails: Record<AdminView, AdminViewDetailsType> = {
     label: "Book Settings",
     icon: Icons.SettingsIcon,
     description: "Configure key details and metadata for your book",
+  },
+};
+
+export function getModeTextColor(mode: ModeType): string {
+  switch (mode) {
+    case ModeType.DEFAULT:
+      return "text-primary";
+    case ModeType.ERROR:
+      return "text-destructive";
+    case ModeType.SUCCESS:
+      return "text-green-500";
+    case ModeType.INFO:
+      return "text-blue-500";
+    default:
+      return "text-primary";
+  }
+}
+
+type ModeDetailsType = {
+  icon: LucideIcon;
+  color: string;
+  lightColor: string;
+};
+export const ModeDetails: Record<ModeType, ModeDetailsType> = {
+  [ModeType.SUCCESS]: {
+    icon: Icons.CheckCircle2Icon,
+    color: "#22c55e",
+    lightColor: "#dcfce7",
+  },
+  [ModeType.ERROR]: {
+    icon: Icons.XCircleIcon,
+    color: "#ef4444",
+    lightColor: "#fee2e2",
+  },
+  [ModeType.INFO]: {
+    icon: Icons.InfoIcon,
+    color: "#3b82f6",
+    lightColor: "#dbeafe",
+  },
+  [ModeType.DEFAULT]: {
+    icon: Icons.InfoIcon,
+    color: "#737373",
+    lightColor: "#f5f5f5",
+  },
+  [ModeType.WARNING]: {
+    icon: Icons.AlertCircleIcon,
+    color: "#f59e0b",
+    lightColor: "#fef3c7",
   },
 };

@@ -1,9 +1,6 @@
-import { Divide, PackageIcon } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import DetailInfo from "~/components/detail-info";
 import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,9 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { Textarea } from "~/components/ui/textarea";
 import AuthorButton from "~/features/authors/components/author-button";
 import DetailContainer from "~/features/page/components/detail-container";
 import { useBook } from "~/providers/book-provider";

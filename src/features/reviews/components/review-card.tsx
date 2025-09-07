@@ -15,6 +15,7 @@ import { Button, buttonVariants } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
 import type { ReviewDetailType } from "~/types/review";
+import ReviewCardSkeleton from "./review-card-skeleton";
 
 interface Props {
   review: ReviewDetailType;
@@ -53,7 +54,7 @@ const ReviewCard = ({
                         {review.reviewer?.name ?? "Unknown User"}
                       </span>
                       {review.orderItemId && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge className="bg-[#e2832c] text-xs">
                           Verified Purchase
                         </Badge>
                       )}
@@ -117,20 +118,22 @@ const ReviewCard = ({
 
             {/* Review Content */}
             <div className="mb-2 lg:px-4">
-              <div className="space-y-1 pb-4">
-                <div className="flex items-center gap-4">
-                  <p className="font-mono text-sm">Rating:</p>
-                  <StarRating compact value={review.rating} disabled />
+              {mode === "user" && (
+                <div className="space-y-1 pb-4">
+                  <div className="flex items-center gap-4">
+                    <p className="font-mono text-sm">Rating:</p>
+                    <StarRating compact value={review.rating} disabled />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <p className="font-mono text-sm">
+                      Date Reviewed:&nbsp;&nbsp;
+                      <span className="text-muted-foreground font-medium">
+                        {review.dateReviewed.toLocaleDateString()}
+                      </span>
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <p className="font-mono text-sm">
-                    Date Reviewed:&nbsp;&nbsp;
-                    <span className="text-muted-foreground font-medium">
-                      {review.dateReviewed.toLocaleDateString()}
-                    </span>
-                  </p>
-                </div>
-              </div>
+              )}
 
               <h4 className="mb-1 font-semibold">{review.title}</h4>
               {/* TODO: ADD CONTAINING SPOILERS */}

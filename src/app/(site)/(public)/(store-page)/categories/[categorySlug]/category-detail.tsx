@@ -6,7 +6,7 @@ import BookLimitSelect from "~/features/books/components/book-limit-select";
 import BookList from "~/features/books/components/book-list";
 import PageHeader from "~/features/page/components/page-header";
 import { api } from "~/trpc/react";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 
 interface Props {
   slug: string | null;
@@ -38,7 +38,7 @@ const CategoryDetail = ({ slug }: Props) => {
       <MessageBox
         title="Error Loading Category"
         icon={TriangleAlertIcon}
-        mode={ConfirmationType.ERROR}
+        mode={ModeType.ERROR}
         description={error.message}
       />
     );
@@ -49,7 +49,7 @@ const CategoryDetail = ({ slug }: Props) => {
       <MessageBox
         title="Category Not Found"
         icon={SearchXIcon}
-        mode={ConfirmationType.DEFAULT}
+        mode={ModeType.DEFAULT}
         description="The category you are looking for does not exist."
       />
     );

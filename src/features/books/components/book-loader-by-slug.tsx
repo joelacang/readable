@@ -4,7 +4,7 @@ import { api } from "~/trpc/react";
 import Loading from "~/components/loading";
 import MessageBox from "~/components/message-box";
 import { SearchXIcon, TriangleAlertIcon } from "lucide-react";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 import Centered from "~/features/page/components/centered";
 import BookAdmin from "./admin/home-page";
 import { usePathname } from "next/navigation";
@@ -38,7 +38,7 @@ const BookLoaderBySlug = ({ slug }: Props) => {
           title="Error loading book."
           description={error.message}
           icon={TriangleAlertIcon}
-          mode={ConfirmationType.ERROR}
+          mode={ModeType.ERROR}
         />
       </Centered>
     );
@@ -51,7 +51,7 @@ const BookLoaderBySlug = ({ slug }: Props) => {
           title="No Book Found"
           description={`No Book Found. Please try again.`}
           icon={SearchXIcon}
-          mode={ConfirmationType.DEFAULT}
+          mode={ModeType.DEFAULT}
         />
       </Centered>
     );

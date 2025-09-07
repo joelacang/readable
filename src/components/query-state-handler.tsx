@@ -1,8 +1,5 @@
 import Centered from "~/features/page/components/centered";
-import {
-  ConfirmationType,
-  type QueryStateHandlerProps,
-} from "~/types/component";
+import { ModeType, type QueryStateHandlerProps } from "~/types/component";
 import Loading from "./loading";
 import MessageBox from "./message-box";
 import { SearchXIcon, TriangleAlertIcon } from "lucide-react";
@@ -40,7 +37,7 @@ export function QueryStateHandler<T>({
               errorMessage ?? "Something went wrong. Please try again."
             }
             icon={TriangleAlertIcon}
-            mode={ConfirmationType.ERROR}
+            mode={ModeType.ERROR}
           />
         </Centered>
       );
@@ -57,7 +54,7 @@ export function QueryStateHandler<T>({
             title={emptyTitle ?? "No Data Found."}
             description={emptyDescription}
             icon={SearchXIcon}
-            mode={ConfirmationType.DEFAULT}
+            mode={ModeType.DEFAULT}
           />
         </Centered>
       );

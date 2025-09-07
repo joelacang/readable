@@ -2,7 +2,7 @@ import { SearchXIcon, TriangleAlertIcon } from "lucide-react";
 import Loading from "~/components/loading";
 import MessageBox from "~/components/message-box";
 import { api } from "~/trpc/react";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 import WishlistItem from "./wishlist-item";
 
 const WishListItems = () => {
@@ -27,7 +27,7 @@ const WishListItems = () => {
         title="Error Loading Cart."
         description={error.message}
         icon={TriangleAlertIcon}
-        mode={ConfirmationType.ERROR}
+        mode={ModeType.ERROR}
         isCompact
       />
     );
@@ -40,7 +40,7 @@ const WishListItems = () => {
           title="No Wishlist found."
           description="Sorry, no wishlist is found in your account."
           icon={SearchXIcon}
-          mode={ConfirmationType.DEFAULT}
+          mode={ModeType.DEFAULT}
           isCompact
         />
       </div>

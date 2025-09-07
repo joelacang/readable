@@ -4,7 +4,7 @@ import MessageBox from "~/components/message-box";
 import BookFormPage from "~/features/books/components/book-form-page";
 import Centered from "~/features/page/components/centered";
 import { api } from "~/trpc/react";
-import { ConfirmationType } from "~/types/component";
+import { ModeType } from "~/types/component";
 
 interface Props {
   bookId: string;
@@ -31,7 +31,7 @@ const EditBook = ({ bookId }: Props) => {
         <MessageBox
           title="Error loading book"
           description={error.message}
-          mode={ConfirmationType.ERROR}
+          mode={ModeType.ERROR}
           icon={TriangleAlertIcon}
         />
       </Centered>
@@ -44,7 +44,7 @@ const EditBook = ({ bookId }: Props) => {
         <MessageBox
           title="No book found"
           description={`No book found for the id: ${bookId}`}
-          mode={ConfirmationType.DEFAULT}
+          mode={ModeType.DEFAULT}
           icon={SearchXIcon}
         />
       </Centered>
