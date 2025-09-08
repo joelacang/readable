@@ -8,6 +8,7 @@ import {
   LibraryIcon,
   ListIcon,
   MessageSquareHeartIcon,
+  PackageIcon,
   ShoppingBagIcon,
   Users2Icon,
 } from "lucide-react";
@@ -40,6 +41,18 @@ const AppSidebar = () => {
       action: () => router.push("/admin"),
     },
     {
+      name: "books",
+      label: "Books",
+      icon: BookIcon,
+      action: () => router.push("/admin/books"),
+    },
+    {
+      name: "inventory",
+      label: "Inventory",
+      icon: PackageIcon,
+      action: () => router.push("/admin/inventory"),
+    },
+    {
       name: "authors",
       label: "Authors",
       icon: BookUser,
@@ -57,12 +70,6 @@ const AppSidebar = () => {
       icon: ListIcon,
       action: () => router.push("/admin/categories"),
     },
-    {
-      name: "books",
-      label: "Books",
-      icon: BookIcon,
-      action: () => router.push("/admin/books"),
-    },
 
     {
       name: "collections",
@@ -70,6 +77,7 @@ const AppSidebar = () => {
       icon: LibraryIcon,
       action: () => router.push("/admin"),
     },
+
     {
       name: "reviews",
       label: "Reviews",

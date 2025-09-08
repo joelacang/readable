@@ -10,6 +10,7 @@ export type CustomerInfoType = {
 };
 
 export type AddressType = {
+  id: string;
   line1: string;
   line2?: string | null;
   city?: string | null;

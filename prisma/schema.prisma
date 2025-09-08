@@ -649,15 +649,16 @@ model Order {
   customerEmail    String?
 
   // Shipping Details
-  shippingName    String?
-  shippingPhone   String?
-  shippingEmail   String?
-  shippingLine1   String?
-  shippingLine2   String?
-  shippingCity    String?
-  shippingState   String?
-  shippingPostal  String?
-  shippingCountry String?
+  shippingAddressId String?
+  shippingName      String?
+  shippingPhone     String?
+  shippingEmail     String?
+  shippingLine1     String?
+  shippingLine2     String?
+  shippingCity      String?
+  shippingState     String?
+  shippingPostal    String?
+  shippingCountry   String?
 
   note String? @db.VarChar(500)
 
@@ -665,8 +666,9 @@ model Order {
   shippedAt      DateTime?
   deliveredAt    DateTime?
 
-  customer User?       @relation(fields: [userId], references: [id])
-  items    OrderItem[]
+  customer        User?       @relation(fields: [userId], references: [id])
+  shippingAddress Address?    @relation(fields: [shippingAddressId], references: [id])
+  items           OrderItem[]
 
   @@index([trackingNumber])
   @@index([shippingName])
@@ -715,4 +717,88 @@ model OrderItem {
   @@index([orderId])
   @@index([bookId])
   @@index([variantId])
+}
+
+model Organization {
+  id          String           @id @default(cuid())
+  name        String
+  email       String
+  phone       String
+  type        OrganizationType @default(OTHER)
+  phoneAlt    String?
+  website     String?
+  description String?
+  addressId   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  address  Address?  @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  contacts Contact[]
+
+  @@index([name])
+  @@index([type])
+}
+
+model Contact {
+  id          String      @id @default(cuid())
+  name        String
+  email       String
+  phone       String
+  position    String?
+  description String?
+  role        ContactRole @default(OTHER)
+  addressId   String?
+
+  orgId        String?
+  organization Organization? @relation(fields: [orgId], references: [id], onDelete: SetNull)
+  address      Address?      @relation(fields: [addressId], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([name])
+  @@index([role])
+  @@index([role, name])
+  @@index([orgId, name])
+}
+
+enum ContactRole {
+  SALES
+  MANAGER
+  SUPPORT
+  BILLING
+  TECHNICAL
+  PROCUREMENT
+  LEGAL
+  OTHER
+}
+
+enum OrganizationType {
+  SUPPLIER
+  DISTRIBUTOR
+  MANUFACTURER
+  VENDOR
+  WHOLESALER
+  RETAILER
+  OTHER
+}
+
+model Address {
+  id          String  @id @default(cuid())
+  line1       String
+  line2       String?
+  city        String
+  state       String? // Optional for global compatibility
+  postal_code String
+  country     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organizations Organization[]
+  contacts      Contact[]
+  orders        Order[]
+
+  @@index([postal_code])
+  @@index([state])
+  @@index([country])
 }

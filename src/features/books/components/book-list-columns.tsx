@@ -32,8 +32,6 @@ const BookListColumns: ColumnDef<BookPreviewType>[] = [
     },
     cell: ({ row }) => {
       const book = row.original;
-      const displayPrice = book.salePrice ?? book.price;
-      const isOnSale = !!book.salePrice;
 
       return (
         <div className="flex w-full flex-row items-start justify-start gap-2 pr-4 sm:gap-4">
@@ -44,7 +42,7 @@ const BookListColumns: ColumnDef<BookPreviewType>[] = [
                 <Image
                   fill
                   className="object-cover"
-                  src={book.images[0]}
+                  src={book.images[0].url}
                   alt={`${book.title} Cover Image`}
                 />
               </div>
@@ -102,25 +100,6 @@ const BookListColumns: ColumnDef<BookPreviewType>[] = [
                 {book.description}
               </p>
             )}
-
-            {/* Pricing */}
-            <div className="flex items-center gap-2">
-              <span
-                className={`text-sm font-semibold sm:text-base ${isOnSale ? "text-green-600" : "text-primary"}`}
-              >
-                ${displayPrice}
-              </span>
-              {isOnSale && (
-                <span className="text-muted-foreground text-xs line-through sm:text-sm">
-                  ${book.price}
-                </span>
-              )}
-              {isOnSale && (
-                <span className="inline-flex items-center rounded-full bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-800">
-                  Sale
-                </span>
-              )}
-            </div>
 
             {/* Additional Images Indicator - Compact on mobile */}
             {book.images.length > 1 && (

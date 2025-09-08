@@ -1,5 +1,4 @@
 import BookReviewList from "~/features/reviews/components/book-review-list";
-import ReviewCardSkeleton from "~/features/reviews/components/review-card-skeleton";
 import ReviewSummary from "~/features/reviews/components/review-summary";
 
 interface Props {
