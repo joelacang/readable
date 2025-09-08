@@ -12,6 +12,7 @@ export const createOrgSchema = z.object({
   website: z.string().url().optional().or(z.literal("")),
   phoneAlt: phoneValidation,
   address: addressSchema.optional(),
+  contactIds: z.array(z.string().cuid()),
 });
 
 export type CreateOrgFormType = z.infer<typeof createOrgSchema>;

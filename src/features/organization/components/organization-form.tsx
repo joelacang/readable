@@ -1,23 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OrganizationType } from "@prisma/client";
-import {
-  GlobeIcon,
-  MailIcon,
-  PhoneIcon,
-  PlusIcon,
-  UserIcon,
-} from "lucide-react";
+import { GlobeIcon, MailIcon, PhoneIcon, UserIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import FormActionButton from "~/components/form-action-button";
 import InputIcon from "~/components/input-icon";
-import { Button } from "~/components/ui/button";
 import { DialogFooter } from "~/components/ui/dialog";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "~/components/ui/form";
 import {
@@ -31,7 +23,6 @@ import { Textarea } from "~/components/ui/textarea";
 import AddressForm from "~/features/contacts/components/address-form";
 import ContactPersonForm from "~/features/contacts/components/contact-person-form";
 import FieldLabelSection from "~/features/form/components/field-label-section";
-import FormGroupHeader from "~/features/form/components/form-group-header";
 import FormHeaderDialog from "~/features/form/components/form-header-dialog";
 import { generateId } from "~/utils/get-values";
 import {
@@ -64,6 +55,7 @@ const OrganizationForm = () => {
         postalCode: "",
         country: "",
       },
+      contactIds: [],
     },
   });
 
@@ -276,18 +268,26 @@ const OrganizationForm = () => {
           {/* Contact Persons Section */}
           <div className="space-y-4">
             <FormHeaderDialog title="CONTACT PERSONS" />
-            <ContactPersonForm orgTempId={orgTempId} />
+            <FormField
+              name="contactIds"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ContactPersonForm
+                      orgTempId={orgTempId}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </div>
         </div>
 
         {/* Form Actions */}
         <DialogFooter className="pt-4">
-          <button
-            type="button"
-            className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none"
-          >
-            Cancel
-          </button>
           <FormActionButton mode="create" isPending={isPending}>
             Create Organization
           </FormActionButton>

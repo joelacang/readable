@@ -1,6 +1,7 @@
 import { createContactSchema, type ContactType } from "~/zod-schemas/contact";
 import { adminProcedure, createTRPCRouter } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import z from "zod";
 
 export const contactRouter = createTRPCRouter({
   create: adminProcedure
@@ -62,5 +63,32 @@ export const contactRouter = createTRPCRouter({
           cause: error,
         });
       }
+    }),
+
+  search: adminProcedure
+    .input(z.object({ searchValue: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const data = await ctx.db.contact.findMany({
+        where: { name: { contains: input.searchValue, mode: "insensitive" } },
+        include: {
+          address: true,
+        },
+      });
+
+      const contacts: ContactType[] = data.map((c) => {
+        const { address } = c;
+
+        return {
+          ...c,
+          address: address
+            ? {
+                ...address,
+                postalCode: address.postal_code,
+              }
+            : null,
+        } satisfies ContactType;
+      });
+
+      return contacts;
     }),
 });
