@@ -40,7 +40,6 @@ model User {
   name                  String?
   displayUsername       String?
   username              String?
-  Purchase              Purchase[]
   WishlistItem          WishlistItem[]
   review                Review[]
   tagsCreated           Tag[]
@@ -197,7 +196,6 @@ model Book {
   tags        BookTag[]
   collections BookCollection[]
   reviews     Review[]
-  purchases   Purchase[]
   wishlists   WishlistItem[]
   authors     BookAuthor[]
   categories  BookCategory[]
@@ -551,24 +549,6 @@ enum BookStatus {
   DISCONTINUED
 }
 
-model Purchase {
-  id       String         @id @default(cuid())
-  userId   String
-  bookId   String
-  price    Decimal        @db.Decimal(10, 2)
-  currency String
-  status   PurchaseStatus
-
-  user User @relation(fields: [userId], references: [id])
-  book Book @relation(fields: [bookId], references: [id])
-
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-  @@index([bookId])
-  @@index([status])
-}
-
 model WishlistItem {
   id     String @id @default(cuid())
   userId String
@@ -809,13 +789,13 @@ enum OrganizationType {
 }
 
 model Address {
-  id          String  @id @default(cuid())
-  line1       String
-  line2       String?
-  city        String
-  state       String? // Optional for global compatibility
-  postal_code String
-  country     String
+  id         String  @id @default(cuid())
+  line1      String
+  line2      String?
+  city       String
+  state      String? // Optional for global compatibility
+  postalCode String
+  country    String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -824,7 +804,7 @@ model Address {
   contacts      Contact[]
   orders        Order[]
 
-  @@index([postal_code])
+  @@index([postalCode])
   @@index([state])
   @@index([country])
 }

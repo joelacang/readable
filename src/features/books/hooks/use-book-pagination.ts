@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import type { BookPreviewType } from "~/types/book";
+import type { BookPreview } from "~/types/book";
 
 type BookPaginationState = {
-  books: BookPreviewType[];
+  books: BookPreview[];
   currentPage: number;
   isLoadingFirstPage: boolean;
   isLoadingMore: boolean;
@@ -14,7 +14,7 @@ type BookPaginationState = {
   onSetLimit: (limit: number) => void;
   onStopLoadingFirstPage: () => void;
   onStopLoadingMore: () => void;
-  onAddBooks: (books: BookPreviewType[]) => void;
+  onAddBooks: (books: BookPreview[]) => void;
   onSetLastPage: () => void;
   onReset: () => void;
   onDeleteBook: (bookId: string) => void;

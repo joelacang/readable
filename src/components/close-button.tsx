@@ -1,16 +1,18 @@
 import { XIcon } from "lucide-react";
 import { Button } from "./ui/button";
+import { cn } from "~/lib/utils";
 
 interface Props {
   onClose: () => void;
   isPending?: boolean;
+  className?: string;
 }
-const CloseButton = ({ onClose, isPending = false }: Props) => {
+const CloseButton = ({ onClose, isPending = false, className }: Props) => {
   return (
     <Button
       variant="ghost"
       size="icon"
-      className="size-fit rounded-full p-2"
+      className={cn("size-fit rounded-full p-2", className)}
       disabled={isPending}
       onClick={(e) => {
         e.preventDefault();

@@ -8,6 +8,7 @@ import CategoryDialog from "~/features/categories/components/category-dialog";
 import ContactDetailDialog from "~/features/contacts/components/contact-detail-dialog";
 import ContactFormDialog from "~/features/contacts/components/contact-form-dialog";
 import ConfirmAlert from "~/features/dialogs/components/confirm-dialog";
+import OrganizationDetailDialog from "~/features/organization/components/organization-detail-dialog";
 import OrganizationFormDialog from "~/features/organization/components/organization-form-dialog";
 import ReviewDialog from "~/features/reviews/components/review-dialog";
 import SeriesDialog from "~/features/series/components/series-dialog";
@@ -33,6 +34,7 @@ const DialogProvider = () => {
       <ContactFormDialog />
       <ContactDetailDialog />
       <OrganizationFormDialog />
+      <OrganizationDetailDialog />
     </>
   );
 };

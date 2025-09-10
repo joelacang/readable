@@ -65,6 +65,7 @@ export const seriesRouter = createTRPCRouter({
       const results: FormIdentityType[] = seriesMatched.map((series) => ({
         id: series.id,
         name: series.title,
+        mode: "update",
       }));
 
       return results;

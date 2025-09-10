@@ -1,5 +1,5 @@
 import type { BookFormat, ReviewStatus } from "@prisma/client";
-import type { BookSummaryType } from "./book";
+import type { BookSummary } from "./book";
 import type { OrderItemType } from "./order";
 import type { UserType } from "./users";
 
@@ -13,5 +13,5 @@ export type ReviewDetailType = {
   bookId: string | null;
   status: ReviewStatus;
   orderItemId: string | null;
-  book?: { details: BookSummaryType | null; format: BookFormat | null } | null;
+  book?: { details: BookSummary | null; format: BookFormat | null } | null;
 };

@@ -2,7 +2,7 @@ import { BookFormat } from "@prisma/client";
 import z from "zod";
 import { formIdentitySchema } from "~/types/component";
 import type { StoredImageType } from "~/features/storage/hooks/use-temp-images";
-import type { BookPreviewType } from "~/types/book";
+import type { BookPreview } from "~/types/book";
 
 export const bookVariantSchema = z.object({
   variantId: z.string().cuid().optional(),
@@ -92,7 +92,7 @@ export const bookSeriesSchema = z.object({
 
 export type SeriesFormData = z.infer<typeof bookSeriesSchema>;
 
-export const createAddToCartSchema = (book: BookPreviewType) => {
+export const createAddToCartSchema = (book: BookPreview) => {
   return z
     .object({
       variantId: z.string().cuid("Please choose a format"),

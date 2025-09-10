@@ -42,7 +42,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { Badge } from "~/components/ui/badge";
 import { Progress } from "~/components/ui/progress";
 import { Avatar, AvatarFallback } from "~/components/ui/avatar";
-import { AdminView, type BookDetailType } from "~/types/book";
+import { AdminView, type BookDetail } from "~/types/book";
 import Image from "next/image";
 import { useIsMobile } from "~/hooks/use-mobile";
 import BookAdminDropdownMenu from "./dropdown-menu";
@@ -123,7 +123,7 @@ const inventoryAlerts = [
 ];
 
 interface Props {
-  book: BookDetailType;
+  book: BookDetail;
 }
 export default function BookAdmin({ book }: Props) {
   const [currentView, setCurrentView] = useState<AdminView>(AdminView.OVERVIEW);

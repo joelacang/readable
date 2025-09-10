@@ -15,13 +15,13 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { ReviewsCard } from "~/features/reviews/components/book-reviews-card";
-import type { BookDetailType } from "~/types/book";
+import type { BookDetail } from "~/types/book";
 import AddToCartForm from "~/features/cart/components/add-to-cart-form";
 import WishlistToggleButton from "~/features/wishlist/components/wishlist-toggle-button";
 import AuthorButton from "~/features/authors/components/author-button";
 
 interface BookDetailPageProps {
-  book: BookDetailType;
+  book: BookDetail;
 }
 
 const BookDetail = ({ book }: BookDetailPageProps) => {

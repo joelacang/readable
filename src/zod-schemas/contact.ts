@@ -15,14 +15,24 @@ export const phoneValidation = z
     message: "Phone number is invalid after formatting",
   });
 
-export const addressSchema = z.object({
-  line1: z.string().min(1, "Address line 1 is required"),
-  line2: z.string().optional(),
-  city: z.string().min(1, "City is required"),
-  state: z.string().optional(),
-  postalCode: z.string().min(1, "Postal code is required"),
-  country: z.string().transform((val) => val.toUpperCase()), // Ensure consistency
-});
+export const addressDefaultValues = {
+  line1: "",
+  line2: "",
+  city: "",
+  state: "",
+  postalCode: "",
+  country: "",
+};
+export const addressSchema = z
+  .object({
+    line1: z.string(),
+    line2: z.string().optional(),
+    city: z.string(),
+    state: z.string().optional(),
+    postalCode: z.string(),
+    country: z.string().transform((val) => val.toUpperCase()), // Ensure consistency
+  })
+  .optional();
 
 // --- Contact Schema ---
 export const createContactSchema = z.object({
@@ -47,13 +57,4 @@ export type ContactType = {
   position?: string | null;
   description?: string | null;
   address?: AddressType | null;
-};
-
-export const addressDefaultValues = {
-  line1: "",
-  line2: "",
-  city: "",
-  state: "",
-  postalCode: "",
-  country: "",
 };

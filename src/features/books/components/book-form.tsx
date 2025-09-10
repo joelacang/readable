@@ -55,11 +55,11 @@ import FormActionButton from "~/components/form-action-button";
 import { BookFormat } from "@prisma/client";
 import FormSingleSelectField from "~/features/form/components/form-single-select-field";
 import cuid from "cuid";
-import type { BookPreviewType } from "~/types/book";
+import type { BookPreview } from "~/types/book";
 
 interface Props {
   book?: BookEditData;
-  onSubmitForm: (data: BookPreviewType) => void;
+  onSubmitForm: (data: BookPreview) => void;
   onUploadingChange: (uploading: boolean) => void;
   onGetSubmittedImages: (images: LinkDetailType[]) => void;
 }

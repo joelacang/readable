@@ -1,7 +1,7 @@
-import type { BookSummaryType } from "./book";
+import type { BookSummary } from "./book";
 
 export type WishListItemType = {
   id: string;
-  book: BookSummaryType;
+  book: BookSummary;
   dateAdded: Date;
 };

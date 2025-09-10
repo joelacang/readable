@@ -7,7 +7,7 @@ import {
   PhoneIcon,
   UserIcon,
 } from "lucide-react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import FormActionButton from "~/components/form-action-button";
 import InputIcon from "~/components/input-icon";
 import { DialogFooter } from "~/components/ui/dialog";
@@ -41,9 +41,17 @@ import Toast from "~/components/toast";
 import { ModeType } from "~/types/component";
 import { Button } from "~/components/ui/button";
 import { useContactDetailDialog } from "../hooks/use-contact-detail-dialog";
+import { isEmptyAddress } from "~/utils/get-values";
 
 const ContactForm = () => {
-  const { onClose, onPending, onCompleted, orgTempId } = useContactFormDialog();
+  const {
+    onClose,
+    onPending,
+    onCompleted,
+    orgTempId,
+    canAddContactToOrg,
+    onContactAdded,
+  } = useContactFormDialog();
   const { onOpen: openContactDetails } = useContactDetailDialog();
   const { mutate: createContact, isPending: isCreatingContact } =
     api.contact.create.useMutation();
@@ -63,35 +71,51 @@ const ContactForm = () => {
   });
 
   const onSubmit = (values: CreateContactFormType) => {
+    const newAddress = isEmptyAddress(values.address)
+      ? undefined
+      : values.address;
+
     const createContactToast = toast.loading(`Creating Contact...`);
     onPending();
 
-    createContact(values, {
-      onSuccess: (response) => {
-        toast.custom(() => (
-          <Toast
-            title="Contact Created"
-            message={`Contact '${response.name}' was created successfully.`}
-            mode={ModeType.SUCCESS}
-            footer={
-              <Button onClick={() => openContactDetails(response)}>
-                Go to Contact
-                <ArrowRightIcon />
-              </Button>
-            }
-          />
-        ));
-        form.reset();
-        onClose();
+    createContact(
+      { ...values, address: newAddress },
+      {
+        onSuccess: (response) => {
+          toast.custom(() => (
+            <Toast
+              title="Contact Created"
+              message={`Contact '${response.name}' was created successfully.`}
+              mode={ModeType.SUCCESS}
+              footer={
+                <>
+                  {!canAddContactToOrg && (
+                    <Button onClick={() => openContactDetails(response)}>
+                      Go to Contact
+                      <ArrowRightIcon />
+                    </Button>
+                  )}
+                </>
+              }
+            />
+          ));
+
+          if (canAddContactToOrg) {
+            onContactAdded(response);
+          }
+
+          form.reset();
+          onClose();
+        },
+        onError: (error) => {
+          toast.error(`Error creating contact: ${error.message}`);
+        },
+        onSettled: () => {
+          toast.dismiss(createContactToast);
+          onCompleted();
+        },
       },
-      onError: (error) => {
-        toast.error(`Error creating contact: ${error.message}`);
-      },
-      onSettled: () => {
-        toast.dismiss(createContactToast);
-        onCompleted();
-      },
-    });
+    );
   };
 
   const handleAddressChange = (value: ContactAddressType) => {

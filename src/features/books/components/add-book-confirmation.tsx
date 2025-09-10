@@ -8,11 +8,11 @@ import { Button, buttonVariants } from "~/components/ui/button";
 import { useTempImages } from "~/features/storage/hooks/use-temp-images";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
-import type { BookPreviewType } from "~/types/book";
+import type { BookPreview } from "~/types/book";
 import type { LinkDetailType } from "~/types/component";
 
 interface Props {
-  book: BookPreviewType;
+  book: BookPreview;
   uploading?: boolean;
   savedImages: LinkDetailType[];
   onReset: (mode: "blank" | "edit") => void;

@@ -42,6 +42,7 @@ export const orderRouter = createTRPCRouter({
           phone: order.shippingPhone,
           email: order.shippingEmail,
           address: {
+            id: "",
             line1: order.shippingLine1 ?? "",
             line2: order.shippingLine2,
             city: order.shippingCity,
@@ -95,6 +96,7 @@ export const orderRouter = createTRPCRouter({
           email: data.shippingEmail ?? data.customerEmail,
           phone: data.shippingPhone,
           address: {
+            id: "",
             line1: data.shippingLine1 ?? "",
             line2: data.shippingLine2,
             city: data.shippingCity,

@@ -7,6 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import ContactSearchResults from "./contact-search-results";
 import type { ContactType } from "~/zod-schemas/contact";
 import ContactSearchResult from "./contact-search-result";
+import { SearchProvider } from "~/providers/search-provider";
+import SearchBar from "~/features/form/components/searchbar";
 
 interface Props {
   orgTempId: string;
@@ -18,10 +20,14 @@ const ContactPersonForm = ({ orgTempId, value, onChange }: Props) => {
   const [showSearchResults, setShowSearchResults] = useState(false);
   const searchResultsRef = useRef<HTMLDivElement>(null);
   const [selectedContacts, setSelectedContacts] = useState<ContactType[]>([]);
+  const {
+    addedContact,
+    onOpenOrgContact,
+    orgTempId: orgTempIdFromDialog,
+    onRemoveContact,
+  } = useContactFormDialog();
 
   const debouncedName = useDebounced(searchText.trim(), 800);
-
-  const { onOpenOrgContact } = useContactFormDialog();
 
   useEffect(() => {
     if (debouncedName) {
@@ -50,6 +56,20 @@ const ContactPersonForm = ({ orgTempId, value, onChange }: Props) => {
     onChange(selectedContacts.map((c) => c.id));
   }, [selectedContacts, onChange]);
 
+  useEffect(() => {
+    if (addedContact && orgTempId === orgTempIdFromDialog) {
+      setSelectedContacts((prev) => {
+        const existing = prev.some((c) => c.id === addedContact.id);
+
+        if (existing) return prev;
+
+        return [...prev, addedContact];
+      });
+
+      onRemoveContact();
+    }
+  }, [addedContact, orgTempId, orgTempIdFromDialog]);
+
   const handleSelectContact = (contact: ContactType) => {
     setSelectedContacts((prev) => {
       if (prev.some((c) => c.id === contact.id)) {
@@ -68,30 +88,12 @@ const ContactPersonForm = ({ orgTempId, value, onChange }: Props) => {
   return (
     <div className="space-y-4 rounded-lg border p-3">
       <div className="flex w-full items-center justify-center gap-2">
-        <div className="relative w-full">
-          <InputIcon
-            value={searchText}
-            onChange={(e) => setSearchText(e.currentTarget.value)}
-            icon={SearchIcon}
-            placeholder="Search Contact Name"
-            onClick={() => {
-              if (debouncedName && !showSearchResults) {
-                setShowSearchResults(true);
-              }
-            }}
-          />
-
-          {debouncedName && showSearchResults && (
-            <div
-              className="absolute top-full z-10 mt-1 w-full"
-              ref={searchResultsRef}
-            >
-              <ContactSearchResults
-                searchValue={debouncedName}
-                onSelectContact={handleSelectContact}
-              />
-            </div>
-          )}
+        <div className="w-full">
+          <SearchProvider>
+            <SearchBar placeholder="Enter Contact Name...">
+              <ContactSearchResults onSelectContact={handleSelectContact} />
+            </SearchBar>
+          </SearchProvider>
         </div>
 
         <Button

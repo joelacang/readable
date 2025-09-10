@@ -9,10 +9,10 @@ import {
 import { Label } from "~/components/ui/label";
 import { RadioGroupItem } from "~/components/ui/radio-group";
 import { cn } from "~/lib/utils";
-import type { BookVariantType } from "~/types/book";
+import type { BookVariant } from "~/types/book";
 
 interface Props {
-  variant: BookVariantType;
+  variant: BookVariant;
   isSelected?: boolean;
 }
 

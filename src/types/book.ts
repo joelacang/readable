@@ -1,7 +1,7 @@
 import type { BookFormat, BookStatus } from "@prisma/client";
 import type { AgeRating, LinkDetailType } from "./component";
 
-export type BookDetailType = {
+export type BookDetail = {
   id: string;
   title: string;
   subtitle?: string | null;
@@ -42,7 +42,7 @@ export type BookDetailType = {
   categories: LinkDetailType[];
   series: LinkDetailType[];
   tags: LinkDetailType[];
-  variants: BookVariantType[];
+  variants: BookVariant[];
   reviews: Array<{
     id: string;
     rating: number;
@@ -60,7 +60,7 @@ export type BookDetailType = {
   wishlistId?: string | null;
 };
 
-export type BookPreviewType = {
+export type BookPreview = {
   id: string;
   title: string;
   slug: string;
@@ -69,11 +69,11 @@ export type BookPreviewType = {
   authors: LinkDetailType[];
   categories: LinkDetailType[];
   images: { id: string; url: string }[];
-  variants: BookVariantType[];
+  variants: BookVariant[];
   wishlistId?: string | null;
 };
 
-export type BookConfirmDetailsType = {
+export type BookConfirmDetails = {
   id: string;
   title: string;
   description?: string | null;
@@ -90,7 +90,7 @@ export type BookConfirmDetailsType = {
   }[];
 };
 
-export type BookVariantType = {
+export type BookVariant = {
   id: string;
   title: string | null;
   format: BookFormat;
@@ -99,7 +99,7 @@ export type BookVariantType = {
   stock?: number | null;
 };
 
-export type BookSummaryType = {
+export type BookSummary = {
   id: string;
   slug: string;
   title: string;
@@ -109,6 +109,15 @@ export type BookSummaryType = {
     name: string;
     slug: string;
   }[];
+};
+
+export type BookStats = {
+  bookId: string;
+  totalSales: number;
+  totalUnitsSold: number;
+  totalReviews: number;
+  averageRating: number;
+  totalStocks: number;
 };
 
 export enum AdminView {

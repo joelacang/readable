@@ -1,8 +1,8 @@
 import { Badge } from "~/components/ui/badge";
-import type { BookVariantType } from "~/types/book";
+import type { BookVariant } from "~/types/book";
 
 interface Props {
-  variant: BookVariantType;
+  variant: BookVariant;
 }
 
 const BookVariantCard = ({ variant }: Props) => {

@@ -19,18 +19,14 @@ import { RadioGroup } from "~/components/ui/radio-group";
 import BookListItem from "~/features/books/components/book-list-item";
 import BookVariantSelect from "~/features/books/components/book-variant-select";
 import { api } from "~/trpc/react";
-import type {
-  BookDetailType,
-  BookPreviewType,
-  BookVariantType,
-} from "~/types/book";
+import type { BookDetail, BookPreview, BookVariant } from "~/types/book";
 import { Loader2Icon } from "lucide-react";
 import { createAddToCartSchema } from "~/zod-schemas/book";
 import { cn } from "~/lib/utils";
 import { useAddToCartDialog } from "../hooks/use-add-to-cart-dialog";
 
 interface Props {
-  book: BookPreviewType | BookDetailType;
+  book: BookPreview | BookDetail;
   mode?: "page" | "dialog";
 }
 
@@ -44,7 +40,7 @@ const AddToCartForm = ({ book, mode = "dialog" }: Props) => {
   } = useAddToCartDialog();
 
   const addToCartSchema = useMemo(() => createAddToCartSchema(book), [book]);
-  const [currentVariant, setCurrentVariant] = useState<BookVariantType | null>(
+  const [currentVariant, setCurrentVariant] = useState<BookVariant | null>(
     null,
   );
   const form = useForm<z.infer<typeof addToCartSchema>>({

@@ -1,9 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OrganizationType } from "@prisma/client";
-import { GlobeIcon, MailIcon, PhoneIcon, UserIcon } from "lucide-react";
+import {
+  ArrowRightIcon,
+  GlobeIcon,
+  MailIcon,
+  PhoneIcon,
+  UserIcon,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import FormActionButton from "~/components/form-action-button";
 import InputIcon from "~/components/input-icon";
+import Toast from "~/components/toast";
+import { Button } from "~/components/ui/button";
 import { DialogFooter } from "~/components/ui/dialog";
 import {
   Form,
@@ -24,7 +33,9 @@ import AddressForm from "~/features/contacts/components/address-form";
 import ContactPersonForm from "~/features/contacts/components/contact-person-form";
 import FieldLabelSection from "~/features/form/components/field-label-section";
 import FormHeaderDialog from "~/features/form/components/form-header-dialog";
-import { generateId } from "~/utils/get-values";
+import { api } from "~/trpc/react";
+import { ModeType } from "~/types/component";
+import { generateId, isEmptyAddress } from "~/utils/get-values";
 import {
   addressDefaultValues,
   type ContactAddressType,
@@ -33,10 +44,17 @@ import {
   createOrgSchema,
   type CreateOrgFormType,
 } from "~/zod-schemas/organization";
+import { useOrgFormDialog } from "../hooks/use-org-form-dialog";
+import { useOrgDetailDialog } from "../hooks/use-org-detail-dialog";
 
 const OrganizationForm = () => {
   const orgTempId = generateId(12);
-  const isPending = false;
+  const { mutate: createOrg, isPending } =
+    api.organization.create.useMutation();
+  const { onClose: closeOrgForm, onPending, onCompleted } = useOrgFormDialog();
+
+  const { onOpen } = useOrgDetailDialog();
+
   const form = useForm<CreateOrgFormType>({
     resolver: zodResolver(createOrgSchema),
     defaultValues: {
@@ -60,7 +78,45 @@ const OrganizationForm = () => {
   });
 
   const onSubmit = (values: CreateOrgFormType) => {
-    console.log(values);
+    const newAddress = isEmptyAddress(values.address)
+      ? undefined
+      : values.address;
+
+    const createOrgToast = toast.loading(`Creating Organization...`);
+    onPending();
+
+    createOrg(
+      {
+        ...values,
+        address: newAddress,
+      },
+      {
+        onSuccess: (response) => {
+          toast.custom(() => (
+            <Toast
+              title="Organization created."
+              mode={ModeType.SUCCESS}
+              message={`Organization '${response.name}' has been created successfully`}
+              footer={
+                <Button onClick={() => onOpen(response)}>
+                  Go To Organization
+                  <ArrowRightIcon />
+                </Button>
+              }
+            />
+          ));
+          form.reset();
+          closeOrgForm();
+        },
+        onError: (error) => {
+          toast.error(`Error creating organization: ${error.message}`);
+        },
+        onSettled: () => {
+          toast.dismiss(createOrgToast);
+          onCompleted();
+        },
+      },
+    );
   };
 
   const handleAddressChange = (value: ContactAddressType) => {
@@ -108,6 +164,7 @@ const OrganizationForm = () => {
                       <Select
                         value={field.value}
                         onValueChange={field.onChange}
+                        disabled={isPending}
                       >
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select organization type" />
@@ -256,6 +313,7 @@ const OrganizationForm = () => {
                         value={field.value ?? addressDefaultValues}
                         onChange={handleAddressChange}
                         errors={form.formState.errors.address}
+                        isPending={isPending}
                       />
                     </FormControl>
                     <FormMessage />
@@ -285,7 +343,6 @@ const OrganizationForm = () => {
             />
           </div>
         </div>
-
         {/* Form Actions */}
         <DialogFooter className="pt-4">
           <FormActionButton mode="create" isPending={isPending}>

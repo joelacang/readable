@@ -167,10 +167,12 @@ export function getOrderPreviews(
       discount: order.discount?.toNumber(),
       userInfo: order.customer,
       shippingInfo: {
+        id: "",
         name: order.shippingName ?? "",
         phone: order.shippingPhone,
         email: order.shippingEmail,
         address: {
+          id: "",
           line1: order.shippingLine1 ?? "",
           line2: order.shippingLine2,
           city: order.shippingCity,

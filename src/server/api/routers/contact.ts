@@ -2,59 +2,42 @@ import { createContactSchema, type ContactType } from "~/zod-schemas/contact";
 import { adminProcedure, createTRPCRouter } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
+import type { Prisma } from "@prisma/client";
 
 export const contactRouter = createTRPCRouter({
   create: adminProcedure
     .input(createContactSchema)
     .mutation(async ({ input, ctx }) => {
       try {
-        const result = await ctx.db.$transaction(async (tx) => {
-          const data = await tx.contact.create({
-            data: {
-              name: input.name,
-              email: input.email,
-              phone: input.phone,
-              position: input.position,
-              role: input.role,
-              description: input.description,
-              address: input.address
-                ? {
-                    create: {
-                      line1: input.address.line1,
-                      line2: input.address.line2,
-                      city: input.address.city,
-                      state: input.address.state,
-                      postal_code: input.address.postalCode,
-                      country: input.address.country,
-                    },
-                  }
-                : undefined,
+        const results = await ctx.db.$transaction(async (tx) => {
+          const { address, ...otherInputs } = input;
+
+          const contactData: Prisma.ContactCreateInput = {
+            ...otherInputs,
+            createdBy: {
+              connect: {
+                id: ctx.session.user.id,
+              },
             },
+          };
+
+          if (address) {
+            contactData.address = {
+              create: address,
+            };
+          }
+
+          const contact = await tx.contact.create({
+            data: contactData,
             include: {
               address: true,
             },
           });
 
-          const contact: ContactType = {
-            id: data.id,
-            name: data.name,
-            description: data.description,
-            phone: data.phone,
-            position: data.position,
-            role: data.role,
-            email: data.email,
-            address: data.address
-              ? {
-                  ...data.address,
-                  postalCode: data.address.postal_code,
-                }
-              : null,
-          };
-
-          return contact;
+          return contact as ContactType;
         });
 
-        return result;
+        return results;
       } catch (error) {
         console.error(`Error creating contact: `, error);
         throw new TRPCError({
@@ -68,27 +51,13 @@ export const contactRouter = createTRPCRouter({
   search: adminProcedure
     .input(z.object({ searchValue: z.string() }))
     .query(async ({ ctx, input }) => {
-      const data = await ctx.db.contact.findMany({
+      const contacts = await ctx.db.contact.findMany({
         where: { name: { contains: input.searchValue, mode: "insensitive" } },
         include: {
           address: true,
         },
       });
 
-      const contacts: ContactType[] = data.map((c) => {
-        const { address } = c;
-
-        return {
-          ...c,
-          address: address
-            ? {
-                ...address,
-                postalCode: address.postal_code,
-              }
-            : null,
-        } satisfies ContactType;
-      });
-
-      return contacts;
+      return contacts as ContactType[];
     }),
 });

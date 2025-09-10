@@ -5,7 +5,7 @@ import type { LinkDetailType } from "~/types/component";
 import BookForm from "./book-form";
 import AddBookConfirmation from "./add-book-confirmation";
 import type { BookEditData } from "~/zod-schemas/book";
-import type { BookPreviewType } from "~/types/book";
+import type { BookPreview } from "~/types/book";
 
 interface Props {
   mode: "blank" | "edit";
@@ -16,13 +16,11 @@ const BookFormPage = ({ mode, book }: Props) => {
   const [formMode, setFormMode] = useState<"blank" | "edit" | "submitted">(
     mode,
   );
-  const [submittedBook, setSubmittedBook] = useState<BookPreviewType | null>(
-    null,
-  );
+  const [submittedBook, setSubmittedBook] = useState<BookPreview | null>(null);
   const [uploading, setUploading] = useState(false);
   const [submittedImages, setSubmittedImages] = useState<LinkDetailType[]>([]);
 
-  const handleSubmitForm = (data: BookPreviewType) => {
+  const handleSubmitForm = (data: BookPreview) => {
     setFormMode("submitted");
     setSubmittedBook(data);
   };

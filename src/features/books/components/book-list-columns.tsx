@@ -20,9 +20,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import type { BookPreviewType } from "~/types/book";
+import type { BookPreview } from "~/types/book";
 
-const BookListColumns: ColumnDef<BookPreviewType>[] = [
+const BookListColumns: ColumnDef<BookPreview>[] = [
   // Book Details Column (80% responsive width)
   {
     id: "book",

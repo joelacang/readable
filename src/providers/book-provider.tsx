@@ -5,10 +5,10 @@ import type React from "react";
 import { createContext, useContext, useState } from "react";
 import { QueryStateHandler } from "~/components/query-state-handler";
 import { api } from "~/trpc/react";
-import { type BookDetailType } from "~/types/book";
+import { type BookDetail } from "~/types/book";
 
 type BookContextType = {
-  book: BookDetailType;
+  book: BookDetail;
   currentOrderRef: string | null;
   setCurrentOrderRef: (ref: string | null) => void;
 };

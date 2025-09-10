@@ -2,13 +2,14 @@ import { QueryStateHandler } from "~/components/query-state-handler";
 import { api } from "~/trpc/react";
 import ContactSearchResult from "./contact-search-result";
 import type { ContactType } from "~/zod-schemas/contact";
+import { useSearch } from "~/providers/search-provider";
 
 interface Props {
-  searchValue: string;
   onSelectContact: (contact: ContactType) => void;
 }
 
-const ContactSearchResults = ({ searchValue, onSelectContact }: Props) => {
+const ContactSearchResults = ({ onSelectContact }: Props) => {
+  const { searchValue, setShowResults } = useSearch();
   const {
     data: contacts,
     isLoading,
@@ -16,7 +17,7 @@ const ContactSearchResults = ({ searchValue, onSelectContact }: Props) => {
   } = api.contact.search.useQuery({ searchValue });
 
   return (
-    <div className="bg-background z-50 max-h-44 overflow-y-auto rounded-lg border py-4 shadow-sm">
+    <div className="bg-card z-50 max-h-44 w-full overflow-y-auto rounded-lg border py-4 shadow-sm">
       <QueryStateHandler
         data={contacts}
         isLoading={isLoading}
@@ -41,6 +42,7 @@ const ContactSearchResults = ({ searchValue, onSelectContact }: Props) => {
                 key={contact.id}
                 contact={contact}
                 selectable
+                onHideResult={() => setShowResults(false)}
               />
             ))}
           </div>

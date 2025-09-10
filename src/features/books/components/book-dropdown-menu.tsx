@@ -15,13 +15,13 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { useConfirmationAlert } from "~/features/dialogs/hooks/use-confirm-dialog";
 import { api } from "~/trpc/react";
-import type { BookPreviewType } from "~/types/book";
+import type { BookPreview } from "~/types/book";
 import type { MenuItemType } from "~/types/component";
 import { useBookPagination } from "../hooks/use-book-pagination";
 import { useRouter } from "next/navigation";
 
 interface Props {
-  book: BookPreviewType;
+  book: BookPreview;
 }
 const BookDropdownMenu = ({ book }: Props) => {
   const { mutate: deleteBook, isPending: isDeletingBook } =

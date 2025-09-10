@@ -1,7 +1,7 @@
 import { MailIcon, PhoneIcon, UserIcon, XIcon } from "lucide-react";
 import CloseButton from "~/components/close-button";
 import Hint from "~/components/hint";
-import { Button } from "~/components/ui/button";
+import { useSearch } from "~/providers/search-provider";
 import type { ContactType } from "~/zod-schemas/contact";
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
   selectable?: boolean;
   removable?: boolean;
   onRemoveContact?: (contactId: string) => void;
+  onHideResult?: () => void;
 }
 
 const ContactSearchResult = ({
@@ -18,6 +19,7 @@ const ContactSearchResult = ({
   removable = false,
   onSelectContact,
   onRemoveContact,
+  onHideResult,
 }: Props) => {
   return (
     <div
@@ -27,6 +29,7 @@ const ContactSearchResult = ({
           e.preventDefault();
           e.stopPropagation();
           onSelectContact(contact);
+          onHideResult?.();
         }
       }}
     >

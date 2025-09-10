@@ -2,7 +2,7 @@ import { BookIcon, ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Badge } from "~/components/ui/badge";
-import type { BookPreviewType } from "~/types/book";
+import type { BookPreview } from "~/types/book";
 import BookDropdownMenu from "./book-dropdown-menu";
 import { Button } from "~/components/ui/button";
 import { FaCartPlus } from "react-icons/fa";
@@ -14,7 +14,7 @@ import WishlistToggleButton from "~/features/wishlist/components/wishlist-toggle
 import { useAddToCartDialog } from "~/features/cart/hooks/use-add-to-cart-dialog";
 
 interface Props {
-  book: BookPreviewType;
+  book: BookPreview;
   isAdmin?: boolean;
   compact?: boolean;
 }

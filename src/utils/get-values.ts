@@ -11,6 +11,11 @@ import type { CategoryDetailType } from "~/types/categories";
 import * as Icons from "lucide-react";
 import type { AddressType } from "~/types/order";
 import { AdminView } from "~/types/book";
+import {
+  addressDefaultValues,
+  type addressSchema,
+} from "~/zod-schemas/contact";
+import type z from "zod";
 
 export function getSize(size: Size): number {
   switch (size) {
@@ -313,4 +318,14 @@ export const ModeDetails: Record<ModeType, ModeDetailsType> = {
     color: "#f59e0b",
     lightColor: "#fef3c7",
   },
+};
+
+export const isEmptyAddress = (address: z.infer<typeof addressSchema>) => {
+  return (
+    address &&
+    address.line1 === addressDefaultValues.line1 &&
+    address.city === addressDefaultValues.city &&
+    address.postalCode === addressDefaultValues.postalCode &&
+    address.country === addressDefaultValues.country
+  );
 };

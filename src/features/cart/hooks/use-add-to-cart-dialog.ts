@@ -1,12 +1,12 @@
 import { create } from "zustand";
-import type { BookPreviewType } from "~/types/book";
+import type { BookPreview } from "~/types/book";
 
 type AddToCardDialogState = {
   open: boolean;
   quantity: number;
-  book: BookPreviewType | null;
+  book: BookPreview | null;
   onOpen: () => void;
-  onAddBook: (book: BookPreviewType) => void;
+  onAddBook: (book: BookPreview) => void;
   onClose: () => void;
   isPending: boolean;
   onPending: () => void;

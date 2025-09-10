@@ -7,7 +7,7 @@ import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { generateSlug } from "~/utils/get-values";
 import z from "zod";
-import type { BookDetailType, BookPreviewType } from "~/types/book";
+import type { BookDetail, BookPreview, BookStats } from "~/types/book";
 import { getAllDescendantCategoryIds } from "~/server/helpers/category";
 import { Decimal } from "@prisma/client/runtime/library";
 import type { StoredImageType } from "~/features/storage/hooks/use-temp-images";
@@ -16,6 +16,7 @@ import {
   getBookPreview,
   updateRelation,
 } from "~/server/helpers/book";
+import { getReviewInfo } from "~/server/helpers/review";
 
 export const bookRouter = createTRPCRouter({
   create: adminProcedure
@@ -396,7 +397,7 @@ export const bookRouter = createTRPCRouter({
         ...others
       } = book;
 
-      const bookDetail: BookDetailType = {
+      const bookDetail: BookDetail = {
         ...others,
         language: book.language ?? "None",
         authors: authors.map((a) => a.author),
@@ -534,7 +535,7 @@ export const bookRouter = createTRPCRouter({
 
         categoryName = category?.name ?? null;
       }
-      const books: BookPreviewType[] = booksData.map((book) => {
+      const books: BookPreview[] = booksData.map((book) => {
         const {
           authors,
           categories,
@@ -558,7 +559,7 @@ export const bookRouter = createTRPCRouter({
             stock: v.stock,
           })),
           wishlistId: wishlists?.[0]?.id ?? null,
-        } satisfies BookPreviewType;
+        } satisfies BookPreview;
       });
 
       return { books, totalCount, categoryName };
@@ -679,5 +680,123 @@ export const bookRouter = createTRPCRouter({
       };
 
       return book;
+    }),
+
+  searchBook: publicProcedure
+    .input(z.object({ searchValue: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const results = await ctx.db.book.findMany({
+        where: {
+          title: {
+            contains: input.searchValue,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          authors: {
+            select: {
+              author: true,
+            },
+          },
+          categories: {
+            select: {
+              category: true,
+            },
+          },
+          variants: true,
+          images: {
+            select: {
+              image: true,
+            },
+          },
+        },
+      });
+
+      const books: BookPreview[] = results.map((book) => {
+        const {
+          authors,
+          categories,
+          variants,
+          images,
+          id,
+          title,
+          slug,
+          status,
+        } = book;
+
+        return {
+          id,
+          title,
+          slug,
+          status,
+          authors: authors.map((a) => ({
+            id: a.author.id,
+            name: a.author.name,
+            slug: a.author.slug,
+          })),
+          categories: categories.map((c) => ({
+            id: c.category.id,
+            name: c.category.name,
+            slug: c.category.slug,
+          })),
+          variants: variants.map((v) => ({
+            id: v.id,
+            title: v.title,
+            format: v.format,
+            price: v.price.toNumber(),
+            salePrice: v.salePrice?.toNumber(),
+          })),
+          images: images.map((i) => ({
+            id: i.image.id,
+            url: i.image.url,
+          })),
+        };
+      });
+
+      return books;
+    }),
+
+  getBookDashboardStats: adminProcedure
+    .input(z.object({ bookId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const orderStats = await ctx.db.orderItem.aggregate({
+        where: { bookId: input.bookId },
+        _sum: {
+          subTotal: true,
+          quantity: true,
+        },
+      });
+
+      const ratingStats = await getReviewInfo({ bookId: input.bookId });
+
+      const totalStock = await ctx.db.bookVariant.aggregate({
+        where: { bookId: input.bookId },
+        _sum: {
+          stock: true,
+        },
+      });
+
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5); // Include current month, so 5 months before
+
+      const salesByMonth = await ctx.db.$queryRaw`
+  SELECT
+    TO_CHAR(DATE_TRUNC('month', "createdAt"), 'YYYY-MM') AS month,
+    SUM("subTotal") AS monthlyRevenue,
+    SUM("quantity") AS monthlyUnitsSold
+  FROM "orderItem"
+  WHERE "createdAt" >= ${sixMonthsAgo}
+  GROUP BY month
+  ORDER BY month;
+`;
+
+      return {
+        bookId: input.bookId,
+        totalSales: orderStats._sum.subTotal?.toNumber() ?? 0,
+        totalUnitsSold: orderStats._sum.quantity ?? 0,
+        totalReviews: ratingStats.totalReviews,
+        averageRating: ratingStats.averageRatings,
+        totalStocks: totalStock._sum.stock ?? 0,
+      } satisfies BookStats;
     }),
 });

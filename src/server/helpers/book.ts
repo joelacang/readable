@@ -1,5 +1,5 @@
 import type { BookFormat, Prisma } from "@prisma/client";
-import type { BookPreviewType } from "~/types/book";
+import type { BookPreview } from "~/types/book";
 import type { FormIdentityType } from "~/types/component";
 import { db } from "../db";
 
@@ -304,7 +304,7 @@ export async function getBookPreview({
 }: {
   bookId: string;
   transaction: Prisma.TransactionClient;
-}): Promise<BookPreviewType | null> {
+}): Promise<BookPreview | null> {
   const book = await transaction.book.findUnique({
     where: { id: bookId },
     select: {
@@ -375,5 +375,5 @@ export async function getBookPreview({
       salePrice: v.salePrice?.toNumber() ?? null,
       stock: v.stock ?? null,
     })),
-  } satisfies BookPreviewType;
+  } satisfies BookPreview;
 }

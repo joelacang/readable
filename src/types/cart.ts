@@ -1,5 +1,5 @@
 import type { BookFormat } from "@prisma/client";
-import type { BookSummaryType } from "./book";
+import type { BookSummary } from "./book";
 
 export type CartType = {
   id: string;
@@ -8,7 +8,7 @@ export type CartType = {
 
 export type CartItemsType = {
   id: string;
-  book: BookSummaryType;
+  book: BookSummary;
   variant: {
     id: string;
     format: BookFormat;

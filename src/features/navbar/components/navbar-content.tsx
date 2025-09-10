@@ -17,6 +17,7 @@ import CartButton from "./cart-button";
 import WishlistButton from "./wishlist-button";
 import { useLoggedUser } from "~/features/users/hooks/use-logged-user";
 import { useRouter } from "next/navigation";
+import BookSearchBar from "~/features/books/components/book-search-bar";
 
 const NavbarContent = () => {
   const isMobile = useIsMobile();
@@ -37,14 +38,8 @@ const NavbarContent = () => {
       <div className="hidden w-full max-w-3xl items-center justify-center gap-2 xl:flex">
         <BrowseCategoryDropdownMenu />
         {/* Search Bar */}
-        <div className="flex-1 items-center justify-center bg-blue-50">
-          <div className="relative w-full">
-            <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
-            <Input
-              placeholder="Search for books, authors, genres..."
-              className="bg-secondary/50 border-secondary focus:border-accent w-full pl-10"
-            />
-          </div>
+        <div className="flex-1 items-center justify-center">
+          <BookSearchBar />
         </div>
       </div>
       {/* Categories Dropdown */}
