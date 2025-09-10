@@ -7,7 +7,12 @@ import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { generateSlug } from "~/utils/get-values";
 import z from "zod";
-import type { BookDetail, BookPreview, BookStats } from "~/types/book";
+import type {
+  BookDetail,
+  BookPreview,
+  BookStats,
+  MonthlySalesData,
+} from "~/types/book";
 import { getAllDescendantCategoryIds } from "~/server/helpers/category";
 import { Decimal } from "@prisma/client/runtime/library";
 import type { StoredImageType } from "~/features/storage/hooks/use-temp-images";
@@ -779,15 +784,20 @@ export const bookRouter = createTRPCRouter({
       const sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5); // Include current month, so 5 months before
 
-      const salesByMonth = await ctx.db.$queryRaw`
-  SELECT
-    TO_CHAR(DATE_TRUNC('month', "createdAt"), 'YYYY-MM') AS month,
-    SUM("subTotal") AS monthlyRevenue,
-    SUM("quantity") AS monthlyUnitsSold
-  FROM "orderItem"
-  WHERE "createdAt" >= ${sixMonthsAgo}
-  GROUP BY month
-  ORDER BY month;
+      const salesByMonth = await ctx.db.$queryRaw<MonthlySalesData[]>`
+WITH months AS (
+  SELECT to_char(date_trunc('month', CURRENT_DATE) - (interval '1 month' * generate_series(0, 5)), 'YYYY-MM') AS month
+)
+SELECT
+  months.month,
+  COALESCE(SUM(o."subTotal"), 0) AS revenue,
+  COALESCE(SUM(o."quantity"), 0) AS units_sold
+FROM months
+LEFT JOIN "OrderItem" o
+  ON to_char(date_trunc('month', o."createdAt"), 'YYYY-MM') = months.month
+  AND o."bookId" = ${input.bookId}
+GROUP BY months.month
+ORDER BY months.month;
 `;
 
       return {
@@ -797,6 +807,7 @@ export const bookRouter = createTRPCRouter({
         totalReviews: ratingStats.totalReviews,
         averageRating: ratingStats.averageRatings,
         totalStocks: totalStock._sum.stock ?? 0,
+        monthlyPerformance: salesByMonth,
       } satisfies BookStats;
     }),
 });

@@ -55,9 +55,6 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { AdminViewDetails } from "~/utils/get-values";
-import { A } from "node_modules/better-auth/dist/shared/better-auth.xU7dIFql";
-import { P } from "node_modules/framer-motion/dist/types.d-Cjd591yU";
-import EditBook from "./edit-book";
 import BookOrders from "./book-orders";
 
 // Mock data

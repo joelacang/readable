@@ -111,6 +111,12 @@ export type BookSummary = {
   }[];
 };
 
+export type MonthlySalesData = {
+  month: string; // e.g., "2025-09"
+  revenue: string; // returned as string because subTotal is Decimal
+  units_sold: number;
+};
+
 export type BookStats = {
   bookId: string;
   totalSales: number;
@@ -118,6 +124,7 @@ export type BookStats = {
   totalReviews: number;
   averageRating: number;
   totalStocks: number;
+  monthlyPerformance: MonthlySalesData[];
 };
 
 export enum AdminView {
