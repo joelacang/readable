@@ -1,5 +1,5 @@
 import FilterSidebar from "~/features/books/components/filter-sidebar";
-import CategoryMenus from "~/features/categories/components/category-menus";
+
 import CategoryDetail from "./category-detail";
 
 interface Props {

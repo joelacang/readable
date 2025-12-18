@@ -3,7 +3,6 @@ import type { Option } from "~/types/component";
 import { useAuthorFormDialog } from "../hooks/use-author-form-dialog";
 import { Button } from "~/components/ui/button";
 import { PlusIcon } from "lucide-react";
-import { p } from "node_modules/better-auth/dist/shared/better-auth.DPa2nz5L";
 
 interface SelectFooterProps
   extends MenuListProps<Option, true, GroupBase<Option>> {

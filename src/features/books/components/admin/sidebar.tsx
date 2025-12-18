@@ -1,7 +1,6 @@
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { useBook } from "~/providers/book-provider";
-import type { AdminView } from "~/types/book";
 import { AdminViewDetails } from "~/utils/get-values";
 
 const BookAdminSidebar = () => {

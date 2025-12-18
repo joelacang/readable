@@ -2,7 +2,6 @@ import { stripe } from "~/utils/stripe";
 import { db } from "../db";
 import { clearCart } from "./cart";
 import { createOrder, type ExtendedStripeSession } from "./order";
-import type Stripe from "stripe";
 import type { PaymentDetailsType } from "~/types/order";
 
 export async function handleCheckoutComplete(

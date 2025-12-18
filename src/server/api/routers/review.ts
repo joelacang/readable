@@ -5,7 +5,7 @@ import z from "zod";
 import { createReviewSchema } from "~/zod-schemas/review";
 import { TRPCError } from "@trpc/server";
 import type { ReviewDetailType } from "~/types/review";
-import { getReviewInfo } from "~/server/helpers/review";
+import { getBookRating } from "~/server/helpers/review";
 
 const pendingReviewsCondition = (loggedUserId: string) => {
   return {
@@ -232,7 +232,7 @@ export const reviewRouter = createTRPCRouter({
   getReviewStats: publicProcedure
     .input(z.object({ bookId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const ratingStats = await getReviewInfo({ bookId: input.bookId });
+      const ratingStats = await getBookRating({ bookId: input.bookId });
 
       const ratingsBreakdown = await ctx.db.review.groupBy({
         by: ["rating"],
@@ -269,7 +269,7 @@ export const reviewRouter = createTRPCRouter({
       });
 
       return {
-        averageRating: ratingStats.averageRatings ?? 0,
+        averageRating: ratingStats.average ?? 0,
         totalRatings: ratingStats.totalReviews,
         ratingsBreakdown: fullBreakdown,
       };

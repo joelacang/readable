@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +11,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
@@ -32,7 +34,7 @@ import FormSelectField from "~/features/form/components/form-select-field";
 import { SeriesSelect } from "~/features/series/components/series-select";
 import { useSeriesDialog } from "~/features/series/hooks/use-series-dialog";
 import { TagSelect } from "~/features/tags/components/tag-select";
-import { type LinkDetailType } from "~/types/component";
+import { AgeRating, type LinkDetailType } from "~/types/component";
 import {
   fileArrayToFileList,
   fromSelectOptions,
@@ -46,7 +48,6 @@ import {
 import { api } from "~/trpc/react";
 import { Loader2Icon, PlusIcon, XIcon } from "lucide-react";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import UploadImageContainer from "~/features/storage/components/upload-image-container";
 import AddImageButton from "~/features/storage/components/add-image-button";
 import { useTempImages } from "~/features/storage/hooks/use-temp-images";
@@ -56,6 +57,7 @@ import { BookFormat } from "@prisma/client";
 import FormSingleSelectField from "~/features/form/components/form-single-select-field";
 import cuid from "cuid";
 import type { BookPreview } from "~/types/book";
+import DateSelect from "~/components/date-select";
 
 interface Props {
   book?: BookEditData;
@@ -88,7 +90,6 @@ const BookForm = ({
     onAddStoredImages,
     onClear: onClearTempImages,
   } = useTempImages();
-  const router = useRouter();
   const { uploadImages } = useUploadFiles();
   const isPending = isCreatingImages || isCreatingBook || isUpdatingBook;
 
@@ -174,7 +175,7 @@ const BookForm = ({
 
     // Step 1: Upload images to storage
     const imageList = fileArrayToFileList(imageArray);
-    const uploadResponse = await uploadImages(imageList)
+    await uploadImages(imageList)
       .then((res) => {
         toast.success("Uploaded your images successfully.");
 
@@ -704,7 +705,7 @@ const BookForm = ({
                 </FormItem>
               )}
             />
-            {/* <div>
+            <div>
               <FormField
                 control={form.control}
                 name="publishedDate"
@@ -743,9 +744,9 @@ const BookForm = ({
                   </FormItem>
                 )}
               />
-            </div> */}
+            </div>
           </div>
-          {/* <div>
+          <div>
             <FormField
               control={form.control}
               name="pageCount"
@@ -860,7 +861,7 @@ const BookForm = ({
                 </FormItem>
               )}
             />
-          </div> */}
+          </div>
         </FormCard>
 
         <FormCard

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import type { FormIdentityType, Option } from "~/types/component";
 import { fromSelectOptions, toSelectOptions } from "~/utils/get-values";
 

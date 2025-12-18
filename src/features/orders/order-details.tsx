@@ -1,13 +1,14 @@
 import {
   CalendarDaysIcon,
-  CreditCardIcon,
   ExternalLinkIcon,
+  ListIcon,
   MailIcon,
   MapPinIcon,
   PackageIcon,
   PhoneIcon,
   TruckIcon,
   UserIcon,
+  WalletIcon,
 } from "lucide-react";
 import DetailInfo from "~/components/detail-info";
 import { Badge } from "~/components/ui/badge";
@@ -17,7 +18,7 @@ import { Separator } from "~/components/ui/separator";
 import type { OrderDetailType } from "~/types/order";
 import { formatAddress } from "~/utils/get-values";
 import OrderItem from "./order-item";
-import PageHeader from "../page/components/page-header";
+import DashboardCard from "../dashboard/components/dashboard-card";
 
 interface Props {
   order: OrderDetailType;
@@ -28,199 +29,168 @@ const OrderDetails = ({ order }: Props) => {
       {/* Left Column */}
       <div className="space-y-6">
         {/* Order Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <PackageIcon className="h-5 w-5" />
-              Order Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <DetailInfo
-                title="Order Reference Code"
-                description={
-                  <p className="text-sm font-semibold text-blue-500">
-                    {order.refCode}
-                  </p>
-                }
-              />
-              <DetailInfo
-                title="Date Processed"
-                description={order.dateCreated.toLocaleString()}
-              />
-            </div>
+        <DashboardCard
+          title="Order Information"
+          icon={PackageIcon}
+          className="space-y-6"
+        >
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <DetailInfo
-              title="Order Status"
-              description={<Badge>{order.status}</Badge>}
+              title="Order Reference Code"
+              description={
+                <p className="text-sm font-semibold text-blue-500">
+                  {order.refCode}
+                </p>
+              }
             />
+            <DetailInfo
+              title="Date Processed"
+              description={order.dateCreated.toLocaleString()}
+            />
+          </div>
+          <DetailInfo
+            title="Order Status"
+            description={<Badge>{order.status}</Badge>}
+          />
 
-            <Separator />
+          <Separator />
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div>
-                <h4 className="mb-3 flex items-center gap-2 font-medium">
-                  <UserIcon className="h-4 w-4" />
-                  Customer Information
-                </h4>
-                <div className="space-y-2 text-sm">
-                  <p>{order.userInfo?.name}</p>
-                </div>
-              </div>
-
-              <div>
-                <h4 className="mb-3 flex items-center gap-2 font-medium">
-                  <MapPinIcon className="h-4 w-4" />
-                  Shipping Information
-                </h4>
-                <div className="space-y-2 text-sm">
-                  <p>{order.shippingInfo?.name ?? order.userInfo?.name}</p>
-                  <p className="flex items-center gap-2">
-                    <PhoneIcon className="h-3 w-3" />
-                    {order.shippingInfo?.phone}
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <MailIcon className="h-3 w-3" />
-                    {order.shippingInfo?.email}
-                  </p>
-                  {order.shippingInfo?.address && (
-                    <p className="text-muted-foreground flex items-start gap-2">
-                      <MapPinIcon className="h-4 w-4 shrink-0" />
-                      {formatAddress(order.shippingInfo?.address)}
-                    </p>
-                  )}
-                </div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div>
+              <h4 className="mb-3 flex items-center gap-2 font-medium">
+                <UserIcon className="h-4 w-4" />
+                Customer Information
+              </h4>
+              <div className="space-y-2 text-sm">
+                <p>{order.userInfo?.name}</p>
               </div>
             </div>
-          </CardContent>
-        </Card>
+
+            <div>
+              <h4 className="mb-3 flex items-center gap-2 font-medium">
+                <MapPinIcon className="h-4 w-4" />
+                Shipping Information
+              </h4>
+              <div className="space-y-2 text-sm">
+                <p>{order.shippingInfo?.name ?? order.userInfo?.name}</p>
+                <p className="flex items-center gap-2">
+                  <PhoneIcon className="h-3 w-3" />
+                  {order.shippingInfo?.phone}
+                </p>
+                <p className="flex items-center gap-2">
+                  <MailIcon className="h-3 w-3" />
+                  {order.shippingInfo?.email}
+                </p>
+                {order.shippingInfo?.address && (
+                  <p className="text-muted-foreground flex items-start gap-2">
+                    <MapPinIcon className="h-4 w-4 shrink-0" />
+                    {formatAddress(order.shippingInfo?.address)}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </DashboardCard>
 
         {/* Order Items */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Order Items</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {order.items.map((item) => (
-                <OrderItem item={item} key={item.id} />
-              ))}
-            </div>
+        <DashboardCard title="Order Items" icon={ListIcon}>
+          <div className="space-y-4">
+            {order.items.map((item) => (
+              <OrderItem item={item} key={item.id} />
+            ))}
+          </div>
 
-            <Separator className="my-4" />
+          <Separator className="my-4" />
 
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Subtotal</span>
-                <span>${order.subTotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Tax</span>
-                <span>${order.taxAmount?.toFixed(2) ?? "0.00"}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Shipping</span>
-                <span>${order.shippingFee?.toFixed(2) ?? "0.00"}</span>
-              </div>
-              <div className="flex justify-between text-sm text-rose-600">
-                <span>Discount</span>
-                <span>-${order.discount?.toFixed(2) ?? "0.00"}</span>
-              </div>
-              <Separator />
-              <div className="flex justify-between text-lg font-medium">
-                <span>Total</span>
-                <span className="text-2xl">
-                  ${order.totalAmount.toFixed(2)}
-                </span>
-              </div>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>Subtotal</span>
+              <span>${order.subTotal.toFixed(2)}</span>
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex justify-between text-sm">
+              <span>Tax</span>
+              <span>${order.taxAmount?.toFixed(2) ?? "0.00"}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span>Shipping</span>
+              <span>${order.shippingFee?.toFixed(2) ?? "0.00"}</span>
+            </div>
+            <div className="flex justify-between text-sm text-rose-600">
+              <span>Discount</span>
+              <span>-${order.discount?.toFixed(2) ?? "0.00"}</span>
+            </div>
+            <Separator />
+            <div className="flex justify-between text-lg font-medium">
+              <span>Total</span>
+              <span className="text-2xl">${order.totalAmount.toFixed(2)}</span>
+            </div>
+          </div>
+        </DashboardCard>
       </div>
 
       {/* Right Column */}
       <div className="space-y-6">
         {/* Payment Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CreditCardIcon className="h-5 w-5" />
-              Payment Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">
-                Payment Method
-              </p>
-              <p className="text-sm">{order.paymentInfo.method}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">
-                Payment Status
-              </p>
-              <Badge>{order.paymentStatus?.toUpperCase()}</Badge>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">
-                Processed Date
-              </p>
-              <p className="text-sm">{order.dateCreated.toLocaleString()}</p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full bg-transparent"
-            >
-              <ExternalLinkIcon className="mr-2 h-4 w-4" />
-              View Receipt
-            </Button>
-          </CardContent>
-        </Card>
+        <DashboardCard
+          title="Payment Information"
+          icon={WalletIcon}
+          className="space-y-3"
+        >
+          <div>
+            <p className="text-muted-foreground text-sm font-medium">
+              Payment Method
+            </p>
+            <p className="text-sm">{order.paymentInfo.method}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground text-sm font-medium">
+              Payment Status
+            </p>
+            <Badge>{order.paymentStatus?.toUpperCase()}</Badge>
+          </div>
+          <div>
+            <p className="text-muted-foreground text-sm font-medium">
+              Processed Date
+            </p>
+            <p className="text-sm">{order.dateCreated.toLocaleString()}</p>
+          </div>
+          <Button variant="outline" size="sm" className="w-full bg-transparent">
+            <ExternalLinkIcon className="mr-2 h-4 w-4" />
+            View Receipt
+          </Button>
+        </DashboardCard>
 
         {/* Shipping Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TruckIcon className="h-5 w-5" />
-              Shipping Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">
-                Shipping Carrier
-              </p>
-              <p className="text-sm">carrier here</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">
-                Tracking Number
-              </p>
-              <p className="font-mono text-sm">0123-01231452-02</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">
-                Estimated Delivery
-              </p>
-              <p className="text-sm">{new Date().toLocaleDateString()}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-sm font-medium">
-                Important Info
-              </p>
-              <p className="text-muted-foreground text-sm">Notes are Here</p>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full bg-transparent"
-            >
-              <ExternalLinkIcon className="mr-2 h-4 w-4" />
-              Track Package
-            </Button>
-          </CardContent>
-        </Card>
+        <DashboardCard
+          title="Shipping Information"
+          icon={TruckIcon}
+          className="space-y-3"
+        >
+          <div>
+            <p className="text-muted-foreground text-sm font-medium">
+              Shipping Carrier
+            </p>
+            <p className="text-sm">carrier here</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground text-sm font-medium">
+              Tracking Number
+            </p>
+            <p className="font-mono text-sm">0123-01231452-02</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground text-sm font-medium">
+              Estimated Delivery
+            </p>
+            <p className="text-sm">{new Date().toLocaleDateString()}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground text-sm font-medium">
+              Important Info
+            </p>
+            <p className="text-muted-foreground text-sm">Notes are Here</p>
+          </div>
+        </DashboardCard>
 
         {/* Timeline */}
         <Card>

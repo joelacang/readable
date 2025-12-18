@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -24,6 +25,7 @@ import { Loader2Icon } from "lucide-react";
 import { createAddToCartSchema } from "~/zod-schemas/book";
 import { cn } from "~/lib/utils";
 import { useAddToCartDialog } from "../hooks/use-add-to-cart-dialog";
+import ErrorToast from "~/components/ui/error-toast";
 
 interface Props {
   book: BookPreview | BookDetail;
@@ -72,6 +74,7 @@ const AddToCartForm = ({ book, mode = "dialog" }: Props) => {
       form.setValue("quantity", 1);
     }
   }, [currentVariant]);
+
   const onSubmit = (values: z.infer<typeof addToCartSchema>) => {
     onAddingToCart();
     addToCart(
@@ -122,7 +125,13 @@ const AddToCartForm = ({ book, mode = "dialog" }: Props) => {
           closeAddToCartDialog();
         },
         onError: (error) => {
-          toast.error(`Error adding item to cart: ${error.message}`);
+          toast.custom(() => (
+            <ErrorToast
+              code={error.data?.code ?? "UNKNOWN_ERROR"}
+              title={`Error adding book to Cart.`}
+              message={error.message}
+            />
+          ));
         },
         onSettled: () => {
           onAddingToCartCompleted();

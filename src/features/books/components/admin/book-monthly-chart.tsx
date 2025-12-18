@@ -14,14 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import type { MonthlySalesData } from "~/types/book";
+import type { GroupedSalesUnits } from "~/types/order";
 
 interface Props {
-  data: {
-    month: string;
-    revenue: number;
-    units: number;
-  }[];
+  data: GroupedSalesUnits[];
 }
 const BookMonthlySalesChart = ({ data }: Props) => {
   return (
@@ -34,7 +30,7 @@ const BookMonthlySalesChart = ({ data }: Props) => {
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
+            <XAxis dataKey="period" />
             <YAxis />
             <Tooltip />
             <Bar dataKey="revenue" fill="var(--chart-1)" />

@@ -63,6 +63,7 @@ model User {
   orgContactsCreated    OrganizationContact[]
   orgsCreated           Organization[]
   contactsCreated       Contact[]
+  featuredBooksAdded    FeaturedBook[]
 
   @@unique([email])
   @@unique([displayUsername])
@@ -211,6 +212,7 @@ model Book {
 
   recommendedBooks BookRecommendation[] @relation("RecommendedBooks")
   orderItems       OrderItem[]
+  featuredBooks    FeaturedBook[]
 
   @@index([title])
   @@index([status])
@@ -807,4 +809,19 @@ model Address {
   @@index([postalCode])
   @@index([state])
   @@index([country])
+}
+
+model FeaturedBook {
+  id        String   @id @default(cuid())
+  bookId    String   @unique
+  addedById String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiresAt DateTime
+
+  book    Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  addedBy User @relation(fields: [addedById], references: [id])
+
+  @@index([bookId])
+  @@index([addedById])
 }

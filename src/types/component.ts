@@ -1,8 +1,6 @@
-import type { TRPCClientError } from "@trpc/client";
 import type { LucideIcon } from "lucide-react";
 import type { IconType } from "react-icons/lib";
 import z from "zod";
-import type { AppRouter } from "~/server/api/root";
 
 export type MenuItemType = {
   name: string;
@@ -33,6 +31,14 @@ export enum Size {
   MEDiUM,
   LARGE,
   XLARGE,
+}
+
+export enum DateRange {
+  DAY = "DAY",
+  WEEK = "WEEK",
+  MONTH = "MONTH",
+  QUARTER = "QUARTER",
+  ANNUAL = "ANNUAL",
 }
 
 export enum AgeRating {
@@ -73,4 +79,23 @@ export type QueryStateHandlerProps<T> = {
   errorTitle?: string;
   errorMessage?: string | null;
   children: (data: T) => React.ReactNode;
+};
+
+export type KPI = {
+  id: string;
+  label: string;
+  subtitle?: string;
+  trending?: "up" | "down";
+  icon?: LucideIcon;
+  color?: string;
+  value: string;
+};
+
+export type KPIResults = {
+  revenue: number;
+  booksSold: number;
+  orders: number;
+  newCustomers: number;
+  newReviews: number;
+  returns: number;
 };

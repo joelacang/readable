@@ -1,5 +1,4 @@
 import { createContext, useContext, useState } from "react";
-import SearchBar from "~/features/form/components/searchbar";
 
 type SearchContextType = {
   searchValue: string;

@@ -1,7 +1,6 @@
-import { MailIcon, PhoneIcon, UserIcon, XIcon } from "lucide-react";
+import { MailIcon, PhoneIcon, UserIcon } from "lucide-react";
 import CloseButton from "~/components/close-button";
 import Hint from "~/components/hint";
-import { useSearch } from "~/providers/search-provider";
 import type { ContactType } from "~/zod-schemas/contact";
 
 interface Props {

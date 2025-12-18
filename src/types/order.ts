@@ -66,3 +66,9 @@ export type OrderDetailType = OrderPreviewType & {
     status: string;
   };
 };
+
+export type GroupedSalesUnits = {
+  period: string;
+  revenue: number;
+  units: number;
+};

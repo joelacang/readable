@@ -132,7 +132,7 @@ export const cartRouter = createTRPCRouter({
               message: "You are not allowed to remove this Cart Item",
             });
 
-          const removedCartItem = await t.cartItem.delete({
+          await t.cartItem.delete({
             where: { id: input.cartItemId },
           });
 

@@ -1,4 +1,3 @@
-import { Provider } from "@radix-ui/react-tooltip";
 import type { GroupBase, StylesConfig } from "react-select";
 import type { Option } from "~/types/component";
 

@@ -1,10 +1,10 @@
 "use client";
 
-import { ArrowRight, ArrowRightIcon, CheckCircle2Icon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Hint from "~/components/hint";
 import { QueryStateHandler } from "~/components/query-state-handler";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
 import OrderItem from "~/features/orders/order-item";
 import PageHeader from "~/features/page/components/page-header";
 import { cn } from "~/lib/utils";
@@ -15,7 +15,6 @@ const MyPendingReviewsPage = () => {
     data: items,
     isLoading,
     isError,
-    error,
   } = api.review.getPendingReviews.useQuery();
   return (
     <div>

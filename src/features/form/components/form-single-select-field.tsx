@@ -1,11 +1,7 @@
 import type { FormIdentityType, Option } from "~/types/component";
 import type { DialogHookProps } from "./form-select-field";
 import { useEffect } from "react";
-import {
-  fromSelectOption,
-  toSelectOption,
-  toSelectOptions,
-} from "~/utils/get-values";
+import { fromSelectOption, toSelectOption } from "~/utils/get-values";
 import { useSeriesDialog } from "~/features/series/hooks/use-series-dialog";
 
 interface FormSelectFieldProps {

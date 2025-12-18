@@ -7,7 +7,7 @@ import Select, {
 } from "react-select";
 import { useDebounced } from "~/hooks/use-debounced";
 import { api } from "~/trpc/react";
-import type { FormIdentityType, Option } from "~/types/component";
+import type { Option } from "~/types/component";
 import { SelectFooter } from "./author-select-footer";
 import { selectMultiStyle } from "~/styles/react-select";
 

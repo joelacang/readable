@@ -16,18 +16,10 @@ import { Textarea } from "~/components/ui/textarea";
 import type { OrderItemType } from "~/types/order";
 import { createReviewSchema } from "~/zod-schemas/review";
 import { useReviewDialog } from "../hooks/use-review-dialog";
-import { useState } from "react";
 import { StarRating } from "~/components/star-rating";
 import { api } from "~/trpc/react";
 import toast from "react-hot-toast";
-import { truncateText } from "~/utils/get-values";
-import {
-  ArrowRightIcon,
-  CheckCircle2Icon,
-  CheckIcon,
-  Divide,
-  Loader2Icon,
-} from "lucide-react";
+import { ArrowRightIcon, Loader2Icon } from "lucide-react";
 import Toast from "~/components/toast";
 import { ModeType } from "~/types/component";
 

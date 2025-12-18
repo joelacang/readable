@@ -1,8 +1,8 @@
-import { XIcon, type LucideIcon } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 import type { HTMLProps } from "react";
 import { cn } from "~/lib/utils";
 import { ModeType } from "~/types/component";
-import { getModeTextColor, ModeDetails } from "~/utils/get-values";
+import { ModeDetails } from "~/utils/get-values";
 
 interface Props extends HTMLProps<HTMLDivElement> {
   title: string;
@@ -41,7 +41,14 @@ const Toast = ({
 
       <div className="flex w-full flex-col gap-4">
         <div className="flex flex-col">
-          <h3 className="text-base font-semibold">{title}</h3>
+          <h3
+            className={cn(
+              mode === ModeType.ERROR ? "text-destructive" : "text-foreground",
+              "text-base font-semibold",
+            )}
+          >
+            {title}
+          </h3>
           {message && (
             <p className="text-muted-foreground text-sm">{message}</p>
           )}

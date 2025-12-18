@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { BookIcon, CheckCircle2Icon, PencilIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

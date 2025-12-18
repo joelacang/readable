@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CameraIcon, Loader2Icon, PencilIcon } from "lucide-react";
+import { Loader2Icon, PencilIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { FaFacebook, FaInstagram, FaTiktok } from "react-icons/fa";
 import { SiWattpad } from "react-icons/si";

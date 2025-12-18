@@ -1,6 +1,5 @@
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -15,10 +14,8 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "~/components/ui/input-otp";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import toast from "react-hot-toast";
-import { Loader2Icon } from "lucide-react";
 import FormActionButton from "~/components/form-action-button";
 
 const ConfirmAlert = () => {
@@ -28,7 +25,6 @@ const ConfirmAlert = () => {
     open,
     isPending,
     isError,
-    isCompleted,
     error,
     onClose,
     onValidate: validate,

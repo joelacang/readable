@@ -2,6 +2,7 @@ import { HeartIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Button } from "~/components/ui/button";
+import ErrorToast from "~/components/ui/error-toast";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import { truncateText } from "~/utils/get-values";
@@ -63,9 +64,13 @@ const WishlistToggleButton = ({
           }
         },
         onError: (error) => {
-          toast.error(
-            `Error adding book '${truncateText(bookTitle, 16)}' to your wishlist: ${error.message}`,
-          );
+          toast.custom(() => (
+            <ErrorToast
+              code={error.data?.code ?? "UNKNOWN_ERROR"}
+              title="Error adding to Wishlist."
+              message={error.message}
+            />
+          ));
         },
         onSettled: () => {
           toast.dismiss(addToWishlistToast);
@@ -101,7 +106,13 @@ const WishlistToggleButton = ({
           setCurrentWishlistId(null);
         },
         onError: (error) => {
-          toast.error(`Error removing wishlist: ${error.message}`);
+          toast.custom(() => (
+            <ErrorToast
+              code={error.data?.code ?? "UNKNOWN_ERROR"}
+              title="Error removing from Wishlist."
+              message={error.message}
+            />
+          ));
         },
         onSettled: () => {
           toast.dismiss(removeFromWishlistToast);

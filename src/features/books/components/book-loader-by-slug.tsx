@@ -8,7 +8,7 @@ import { ModeType } from "~/types/component";
 import Centered from "~/features/page/components/centered";
 import BookAdmin from "./admin/home-page";
 import { usePathname } from "next/navigation";
-import BookDetail from "./book-detail";
+import BookDetailSection from "./book-detail";
 
 interface Props {
   slug: string;
@@ -58,7 +58,9 @@ const BookLoaderBySlug = ({ slug }: Props) => {
   }
 
   return (
-    <>{isAdmin ? <BookAdmin book={book} /> : <BookDetail book={book} />}</>
+    <>
+      {isAdmin ? <BookAdmin book={book} /> : <BookDetailSection book={book} />}
+    </>
   );
 };
 

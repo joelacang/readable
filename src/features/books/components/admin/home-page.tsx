@@ -17,16 +17,12 @@ import {
   Cell,
 } from "recharts";
 import {
-  Edit,
-  Trash2,
-  Copy,
   Star,
   TrendingUp,
   Package,
   DollarSign,
   AlertTriangle,
   CheckCircle,
-  ImageIcon,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
@@ -38,15 +34,9 @@ import {
 } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
-import { Badge } from "~/components/ui/badge";
 import { Progress } from "~/components/ui/progress";
 import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 import { AdminView, type BookDetail } from "~/types/book";
-import Image from "next/image";
-import { useIsMobile } from "~/hooks/use-mobile";
-import BookAdminDropdownMenu from "./dropdown-menu";
-import BookAdminSidebar from "./sidebar";
 import {
   Select,
   SelectContent,
@@ -124,7 +114,6 @@ interface Props {
 }
 export default function BookAdmin({ book }: Props) {
   const [currentView, setCurrentView] = useState<AdminView>(AdminView.OVERVIEW);
-  const isMobile = useIsMobile();
 
   const handleViewChange = (view: AdminView) => {
     setCurrentView(view);

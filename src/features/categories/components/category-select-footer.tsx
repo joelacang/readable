@@ -2,7 +2,6 @@ import { components, type GroupBase, type MenuListProps } from "react-select";
 import type { Option } from "~/types/component";
 import { Button } from "~/components/ui/button";
 import { PlusIcon } from "lucide-react";
-import { p } from "node_modules/better-auth/dist/shared/better-auth.DPa2nz5L";
 import { useCategoryDialog } from "../hooks/use-category-dialog";
 
 interface SelectFooterProps

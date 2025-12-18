@@ -4,8 +4,7 @@ import { api } from "~/trpc/react";
 import UserDropdownMenu from "./user-dropdown-menu";
 import { useLoggedUser } from "../hooks/use-logged-user";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import SignInButton from "./sign-in-button";
+
 import toast from "react-hot-toast";
 
 const UserMenu = () => {
@@ -16,7 +15,6 @@ const UserMenu = () => {
     error,
   } = api.user.getLoggedUser.useQuery();
   const { addLoggedUser, removeLoggedUser } = useLoggedUser();
-  const router = useRouter();
 
   useEffect(() => {
     if (!isPending) {

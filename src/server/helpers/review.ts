@@ -1,10 +1,11 @@
+import type { BookRating } from "~/types/review";
 import { db } from "../db";
 
-export async function getReviewInfo({
+export async function getBookRating({
   bookId,
 }: {
   bookId: string;
-}): Promise<{ averageRatings: number; totalReviews: number }> {
+}): Promise<BookRating> {
   const ratingStats = await db.review.aggregate({
     where: {
       bookId,
@@ -20,6 +21,6 @@ export async function getReviewInfo({
 
   return {
     totalReviews: ratingStats._count.rating,
-    averageRatings: ratingStats._avg.rating ?? 0,
+    average: ratingStats._avg.rating ?? 0,
   };
 }

@@ -41,7 +41,12 @@ const BookOrders = ({ bookId }: Props) => {
           ) : (
             <div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
               {orders.map((order) => (
-                <OrderPreviewCard order={order} key={order.id} />
+                <OrderPreviewCard
+                  order={order}
+                  key={order.id}
+                  book={book}
+                  isAdmin
+                />
               ))}
             </div>
           )}

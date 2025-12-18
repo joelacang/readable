@@ -1,25 +1,31 @@
-import { ChevronRightCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Card, CardContent } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
-import { useBook } from "~/providers/book-provider";
+import type { BookDetail } from "~/types/book";
 import type { OrderPreviewType } from "~/types/order";
 import { getStatusStyles } from "~/utils/get-values";
 
 interface Props {
   order: OrderPreviewType;
+  book?: BookDetail;
+  isAdmin?: boolean;
 }
-const OrderPreviewCard = ({ order }: Props) => {
+const OrderPreviewCard = ({ order, book, isAdmin }: Props) => {
   const router = useRouter();
-  const { book } = useBook();
 
   return (
     <Card
       className="shadow-primary w-full cursor-pointer transition-shadow duration-200 hover:shadow-md"
-      onClick={() =>
-        router.push(`/admin/books/${book.slug}/orders/${order.refCode}`)
-      }
+      onClick={() => {
+        if (isAdmin) {
+          if (book) {
+            router.push(`/admin/books/${book.slug}/orders/${order.refCode}`);
+          }
+        } else {
+          router.push(`/user/orders/${order.refCode}`);
+        }
+      }}
     >
       <CardContent className="">
         <div className="flex flex-col items-start justify-between gap-4">

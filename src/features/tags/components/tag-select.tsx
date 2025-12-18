@@ -4,7 +4,7 @@ import { type MultiValue } from "react-select";
 import CreatableSelect from "react-select/creatable";
 import { useDebounced } from "~/hooks/use-debounced";
 import { api } from "~/trpc/react";
-import type { FormIdentityType, Option } from "~/types/component";
+import type { Option } from "~/types/component";
 import { selectMultiStyle } from "~/styles/react-select";
 import { sanitizeInput } from "~/utils/get-values";
 import toast from "react-hot-toast";
@@ -119,7 +119,7 @@ export const TagSelect = ({ onSelectTags, tagsSelected }: TagSelectProps) => {
         onChange={handleChange}
         value={tagsSelected}
         onInputChange={handleInputState}
-        isValidNewOption={(inputValue, selectValue, selectOptions) => {
+        isValidNewOption={(inputValue) => {
           // Only allow creation if input matches the debouncedName,
           // which means user paused typing for 800ms
           return inputValue === debouncedName && inputValue.trim().length > 0;

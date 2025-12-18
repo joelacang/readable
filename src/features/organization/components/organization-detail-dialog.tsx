@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   BriefcaseIcon,
   Building2Icon,
-  Contact,
   GlobeIcon,
   MailIcon,
   MapPinIcon,
@@ -21,28 +20,28 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
 
-const formatDate = (dateString: Date) => {
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+// const formatDate = (dateString: Date) => {
+//   return new Date(dateString).toLocaleDateString("en-US", {
+//     year: "numeric",
+//     month: "long",
+//     day: "numeric",
+//     hour: "2-digit",
+//     minute: "2-digit",
+//   });
+// };
 
-const formatAddress = (address: AddressType) => {
-  if (!address) return "No address provided";
+// const formatAddress = (address: AddressType) => {
+//   if (!address) return "No address provided";
 
-  const parts = [
-    address.line1,
-    address.line2,
-    `${address.city}, ${address.state} ${address.postalCode}`,
-    address.country,
-  ].filter(Boolean);
+//   const parts = [
+//     address.line1,
+//     address.line2,
+//     `${address.city}, ${address.state} ${address.postalCode}`,
+//     address.country,
+//   ].filter(Boolean);
 
-  return parts.join(", ");
-};
+//   return parts.join(", ");
+// };
 
 const getTypeColor = (type: OrganizationType) => {
   const colors = {

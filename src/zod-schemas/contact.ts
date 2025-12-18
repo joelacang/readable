@@ -23,16 +23,14 @@ export const addressDefaultValues = {
   postalCode: "",
   country: "",
 };
-export const addressSchema = z
-  .object({
-    line1: z.string(),
-    line2: z.string().optional(),
-    city: z.string(),
-    state: z.string().optional(),
-    postalCode: z.string(),
-    country: z.string().transform((val) => val.toUpperCase()), // Ensure consistency
-  })
-  .optional();
+export const addressSchema = z.object({
+  line1: z.string(),
+  line2: z.string(),
+  city: z.string(),
+  state: z.string(),
+  postalCode: z.string(),
+  country: z.string().transform((val) => val.toUpperCase()), // Ensure consistency
+});
 
 // --- Contact Schema ---
 export const createContactSchema = z.object({

@@ -1,4 +1,3 @@
-import { isPageStatic } from "next/dist/build/utils";
 import { create } from "zustand";
 import type { FormIdentityType } from "~/types/component";
 import type { UserPreviewType } from "~/types/users";

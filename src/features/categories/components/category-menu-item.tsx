@@ -12,7 +12,6 @@ interface Props {
 const CategoryMenuItem = ({ category, isAdmin }: Props) => {
   const router = useRouter();
   const Icon = category.icon ? getLucideIconByName(category.icon) : null;
-  const iconColor = category.color;
   return (
     <div className="group relative flex items-center justify-between">
       <Button

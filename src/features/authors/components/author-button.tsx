@@ -1,11 +1,13 @@
 import { Button } from "~/components/ui/button";
 import type { LinkDetailType } from "~/types/component";
 import { useAuthorDetail } from "../hooks/use-author-detail";
+import { cn } from "~/lib/utils";
 
 interface Props {
   author: LinkDetailType;
+  size?: "sm" | "md" | "lg";
 }
-const AuthorButton = ({ author }: Props) => {
+const AuthorButton = ({ author, size = "md" }: Props) => {
   const { onOpen } = useAuthorDetail();
   return (
     <Button
@@ -15,7 +17,13 @@ const AuthorButton = ({ author }: Props) => {
       size="sm"
       onClick={() => onOpen(author.id)}
     >
-      {author.name}
+      <p
+        className={cn(
+          size === "sm" ? "text-sm" : size === "md" ? "text-base" : "text-lg",
+        )}
+      >
+        {author.name}
+      </p>
     </Button>
   );
 };

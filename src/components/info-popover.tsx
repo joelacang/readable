@@ -4,7 +4,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { Button } from "~/components/ui/button";
-import { HelpCircleIcon, InfoIcon } from "lucide-react";
+import { InfoIcon } from "lucide-react";
 
 interface InfoPopoverProps {
   children: React.ReactNode;

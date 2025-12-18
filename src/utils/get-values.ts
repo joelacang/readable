@@ -1,5 +1,6 @@
 import { BookIcon, type LucideIcon } from "lucide-react";
 import {
+  DateRange,
   ModeType,
   Size,
   type FormIdentityType,
@@ -16,6 +17,23 @@ import {
   type addressSchema,
 } from "~/zod-schemas/contact";
 import type z from "zod";
+import {
+  endOfDay,
+  endOfMonth,
+  endOfQuarter,
+  endOfWeek,
+  endOfYear,
+  startOfDay,
+  startOfMonth,
+  startOfQuarter,
+  startOfWeek,
+  startOfYear,
+  subDays,
+  subMonths,
+  subQuarters,
+  subWeeks,
+  subYears,
+} from "date-fns";
 
 export function getSize(size: Size): number {
   switch (size) {
@@ -329,3 +347,82 @@ export const isEmptyAddress = (address: z.infer<typeof addressSchema>) => {
     address.country === addressDefaultValues.country
   );
 };
+
+export function getDateRange({
+  range,
+  mode = "recent",
+}: {
+  range: DateRange;
+  mode?: "recent" | "previous";
+}): { start?: Date; end?: Date } {
+  const now = new Date();
+
+  switch (range) {
+    case DateRange.DAY: {
+      if (mode === "previous") {
+        const start = startOfDay(subDays(now, 1));
+        const end = endOfDay(subDays(now, 1));
+        return { start, end };
+      }
+      return { start: startOfDay(now), end: endOfDay(now) };
+    }
+
+    case DateRange.WEEK: {
+      if (mode === "previous") {
+        // Get start of current week, then subtract one week
+        const currentWeekStart = startOfWeek(now, { weekStartsOn: 1 });
+        const start = startOfWeek(subWeeks(currentWeekStart, 1), {
+          weekStartsOn: 1,
+        });
+        const end = endOfWeek(subWeeks(currentWeekStart, 1), {
+          weekStartsOn: 1,
+        });
+        return { start, end };
+      }
+      return {
+        start: startOfWeek(now, { weekStartsOn: 1 }),
+        end: endOfWeek(now, { weekStartsOn: 1 }),
+      };
+    }
+
+    case DateRange.MONTH: {
+      if (mode === "previous") {
+        const currentMonthStart = startOfMonth(now);
+        const start = startOfMonth(subMonths(currentMonthStart, 1));
+        const end = endOfMonth(subMonths(currentMonthStart, 1));
+        return { start, end };
+      }
+      return { start: startOfMonth(now), end: endOfMonth(now) };
+    }
+
+    case DateRange.QUARTER: {
+      if (mode === "previous") {
+        const currentQuarterStart = startOfQuarter(now);
+        const start = startOfQuarter(subQuarters(currentQuarterStart, 1));
+        const end = endOfQuarter(subQuarters(currentQuarterStart, 1));
+        return { start, end };
+      }
+      return { start: startOfQuarter(now), end: endOfQuarter(now) };
+    }
+
+    case DateRange.ANNUAL: {
+      if (mode === "previous") {
+        const currentYearStart = startOfYear(now);
+        const start = startOfYear(subYears(currentYearStart, 1));
+        const end = endOfYear(subYears(currentYearStart, 1));
+        return { start, end };
+      }
+      return { start: startOfYear(now), end: endOfYear(now) };
+    }
+  }
+}
+
+export function currencyFormatter(data: number) {
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2,
+  });
+
+  return formatter.format(data);
+}

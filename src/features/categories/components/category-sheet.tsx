@@ -7,12 +7,10 @@ import {
 } from "~/components/ui/sheet";
 import CategoryMenus from "./category-menus";
 import { useCategorySheet } from "../hooks/use-category-sheet";
-import { useIsMobile } from "~/hooks/use-mobile";
 import { useEffect } from "react";
 
 const CategorySheet = () => {
   const { open, onClose } = useCategorySheet();
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 80rem)"); // 1280px

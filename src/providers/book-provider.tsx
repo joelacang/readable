@@ -5,12 +5,14 @@ import type React from "react";
 import { createContext, useContext, useState } from "react";
 import { QueryStateHandler } from "~/components/query-state-handler";
 import { api } from "~/trpc/react";
-import { type BookDetail } from "~/types/book";
+import { AdminView, type BookDetail } from "~/types/book";
 
 type BookContextType = {
   book: BookDetail;
   currentOrderRef: string | null;
   setCurrentOrderRef: (ref: string | null) => void;
+  view: AdminView;
+  setView: (view: AdminView) => void;
 };
 
 const BookContext = createContext<BookContextType | null>(null);
@@ -30,7 +32,11 @@ interface Props {
 export const BookProvider = ({ children }: Props) => {
   const params = useParams();
   const bookSlug = params?.bookSlug as string;
+  const [view, setView] = useState<AdminView>(AdminView.OVERVIEW);
 
+  const handleSetView = (view: AdminView) => {
+    setView(view);
+  };
   const {
     data: book,
     isLoading,
@@ -55,7 +61,13 @@ export const BookProvider = ({ children }: Props) => {
     >
       {(book) => (
         <BookContext.Provider
-          value={{ currentOrderRef, setCurrentOrderRef, book }}
+          value={{
+            currentOrderRef,
+            setCurrentOrderRef,
+            book,
+            view,
+            setView: handleSetView,
+          }}
         >
           {children}
         </BookContext.Provider>

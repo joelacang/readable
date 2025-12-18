@@ -4,9 +4,7 @@ import {
   CalendarIcon,
   ClockIcon,
   GlobeIcon,
-  HeartIcon,
   Share2Icon,
-  StarIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,12 +17,13 @@ import type { BookDetail } from "~/types/book";
 import AddToCartForm from "~/features/cart/components/add-to-cart-form";
 import WishlistToggleButton from "~/features/wishlist/components/wishlist-toggle-button";
 import AuthorButton from "~/features/authors/components/author-button";
+import { StarRating } from "~/components/star-rating";
 
 interface BookDetailPageProps {
   book: BookDetail;
 }
 
-const BookDetail = ({ book }: BookDetailPageProps) => {
+const BookDetailSection = ({ book }: BookDetailPageProps) => {
   const publishedDate = book.publishedDate
     ? new Date(book.publishedDate).toLocaleDateString("en-US", {
         year: "numeric",
@@ -82,17 +81,17 @@ const BookDetail = ({ book }: BookDetailPageProps) => {
         {/* Right Column - Book Details */}
         <div className="w-full space-y-6 lg:col-span-2">
           {/* Header Section */}
-          <div className="space-y-4">
+          <div className="space-y-2">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <h1 className="text-2xl leading-tight font-bold md:text-3xl lg:text-4xl">
                   {book.title}
                 </h1>
-                {book.subtitle && (
+                {book.subtitle ? (
                   <p className="text-muted-foreground text-sm lg:text-xl">
                     {book.subtitle}
                   </p>
-                )}
+                ) : null}
               </div>
               <div className="ml-4 hidden items-center gap-2 lg:flex">
                 <WishlistToggleButton
@@ -107,15 +106,15 @@ const BookDetail = ({ book }: BookDetailPageProps) => {
             </div>
 
             {/* Author and Series */}
-            <div className="flex flex-wrap items-center gap-2 text-lg">
+            <div className="flex flex-wrap items-center gap-3 text-lg">
               <span>by</span>
-              {book.authors.map((author, index) => (
-                <AuthorButton key={author.id} author={author} />
+              {book.authors.map((author) => (
+                <AuthorButton key={author.id} author={author} size="lg" />
               ))}
               {book.series && book.series.length > 0 && (
                 <>
                   {book.series.map((series) => (
-                    <div key={series.id}>
+                    <div key={series.id} className="space-x-2">
                       <span className="text-muted-foreground">•</span>
                       <Link
                         href={series.slug ? `/series/${series.slug}` : ""}
@@ -132,14 +131,14 @@ const BookDetail = ({ book }: BookDetailPageProps) => {
             {/* Rating and Price */}
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <StarIcon
-                    key={i}
-                    className="fill-primary text-primary h-5 w-5"
-                  />
-                ))}
-                <span className="text-muted-foreground ml-2 text-sm">
-                  (4.8 • 1,234 reviews)
+                <StarRating
+                  value={Math.round(book.rating?.average ?? 0)}
+                  disabled
+                />
+                <span className="text-muted-foreground ml-2 text-lg">
+                  (
+                  {`${book.rating?.average ?? 0} • with ${book.rating?.totalReviews ?? 0} reviews`}
+                  )
                 </span>
               </div>
             </div>
@@ -289,4 +288,4 @@ const BookDetail = ({ book }: BookDetailPageProps) => {
   );
 };
 
-export default BookDetail;
+export default BookDetailSection;

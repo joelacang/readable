@@ -1,9 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { SearchIcon } from "lucide-react";
 import { useEffect, useRef, useState, type HTMLProps } from "react";
 import InputIcon from "~/components/input-icon";
 import { useDebounced } from "~/hooks/use-debounced";
-import { useSearchBar } from "../hooks/use-searchbar";
-import { Button } from "~/components/ui/button";
 import CloseButton from "~/components/close-button";
 import { useSearch } from "~/providers/search-provider";
 

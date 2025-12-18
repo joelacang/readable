@@ -1,5 +1,6 @@
-import { PlusIcon, SearchIcon, UserSearchIcon } from "lucide-react";
-import InputIcon from "~/components/input-icon";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { PlusIcon, UserSearchIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { useContactFormDialog } from "../hooks/use-contact-form-dialog";
 import { useDebounced } from "~/hooks/use-debounced";

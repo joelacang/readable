@@ -1,6 +1,6 @@
 import { OrganizationType } from "@prisma/client";
 import z from "zod";
-import { addressSchema, createContactSchema, phoneValidation } from "./contact";
+import { addressSchema, phoneValidation } from "./contact";
 
 export const createOrgSchema = z.object({
   name: z.string().min(1, "Name is required"),

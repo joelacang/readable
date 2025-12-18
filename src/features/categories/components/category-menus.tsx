@@ -1,13 +1,8 @@
 "use client";
 import { TriangleAlertIcon } from "lucide-react";
 import MessageBox from "~/components/message-box";
-import {
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenuButton,
-} from "~/components/ui/sidebar";
+import { SidebarGroup, SidebarGroupContent } from "~/components/ui/sidebar";
 import { Skeleton } from "~/components/ui/skeleton";
-import CategoryMenuItem from "~/features/categories/components/category-menu-item";
 import { api } from "~/trpc/react";
 import { ModeType } from "~/types/component";
 import CategoryMenu from "./category-menu";

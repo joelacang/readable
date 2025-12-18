@@ -1,8 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { BookOpenIcon, LockIcon } from "lucide-react";
 import SignUpForm from "./sign-up-form";
-import { FaGoogle, FaDiscord } from "react-icons/fa";
 import { Button } from "~/components/ui/button";
 import { DiscordIcon } from "~/icons/discord";
 import { GoogleIcon } from "~/icons/google";
@@ -30,7 +28,7 @@ export default function AuthComponent() {
     <div className="from-almond-50 to-almond-200 flex min-h-screen items-center justify-center bg-linear-to-br px-4 py-8">
       <Card className="hover:shadow-3xl bg-background w-full max-w-md transform rounded-2xl p-8 shadow-2xl transition-all duration-300">
         {/* Logo */}
-        <div className="mb-8 space-y-2 text-center">
+        <div className="mb-8 flex w-full flex-col items-center justify-center gap-2">
           <Logo orientation="horizontal" showLabel />
           <p className="text-muted-foreground text-sm">
             {mode === "signin"

@@ -60,6 +60,13 @@ const MessageBox = ({
       titleColor: "text-primary",
       descColor: "text-primary",
     },
+    warning: {
+      bg: "bg-yellow-50",
+      border: "border",
+      iconColor: "text-yellow-600",
+      titleColor: "text-yellow-90",
+      descColor: "text-yellow-700",
+    },
   };
 
   const styles = modeStyles[mode] || modeStyles.default;

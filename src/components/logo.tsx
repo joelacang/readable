@@ -1,7 +1,6 @@
 "use client";
 
 import { BookOpenIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { cn } from "~/lib/utils";
 
 interface Props {
@@ -18,7 +17,6 @@ const Logo = ({
   showSlogan = false,
   className,
 }: Props) => {
-  const router = useRouter();
   return (
     <div
       className={cn(

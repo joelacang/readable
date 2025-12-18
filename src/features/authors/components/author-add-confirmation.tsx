@@ -1,4 +1,4 @@
-import { CheckCircle2Icon, CheckIcon } from "lucide-react";
+import { CheckCircle2Icon } from "lucide-react";
 import MessageBox from "~/components/message-box";
 import { Button } from "~/components/ui/button";
 import { DialogFooter } from "~/components/ui/dialog";

@@ -48,7 +48,6 @@ const ContactForm = () => {
     onClose,
     onPending,
     onCompleted,
-    orgTempId,
     canAddContactToOrg,
     onContactAdded,
   } = useContactFormDialog();
@@ -71,9 +70,10 @@ const ContactForm = () => {
   });
 
   const onSubmit = (values: CreateContactFormType) => {
-    const newAddress = isEmptyAddress(values.address)
-      ? undefined
-      : values.address;
+    const newAddress =
+      values.address && isEmptyAddress(values.address)
+        ? undefined
+        : values.address;
 
     const createContactToast = toast.loading(`Creating Contact...`);
     onPending();
@@ -122,7 +122,6 @@ const ContactForm = () => {
     form.setValue("address", value);
   };
 
-  const errors = form.formState.errors.address;
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>

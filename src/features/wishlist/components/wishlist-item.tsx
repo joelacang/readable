@@ -1,8 +1,6 @@
-import { XIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import CloseButton from "~/components/close-button";
-import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
 import type { WishListItemType } from "~/types/wishlist";
 import { useWishlistSheet } from "../hooks/use-wishlist-sheet";
@@ -35,7 +33,7 @@ const WishlistItem = ({ item }: Props) => {
     removeWishlistItem(
       { wishlistId: item.id },
       {
-        onSuccess: (response) => {
+        onSuccess: () => {
           toast.success(
             `'${truncateText(book.title, 16)}' removed from wishlist.`,
           );

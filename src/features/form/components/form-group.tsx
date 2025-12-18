@@ -1,5 +1,4 @@
 import type { HTMLProps } from "react";
-import FormGroupHeader from "./form-group-header";
 import { cn } from "~/lib/utils";
 
 interface FormGroupProps extends HTMLProps<HTMLDivElement> {

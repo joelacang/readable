@@ -1,6 +1,4 @@
 import { useState } from "react";
-import type { ClientUploadedFileData } from "uploadthing/types";
-import { createClient } from "~/utils/supabase/client"; // Adjust path to your Supabase client instance
 import { uploadFiles } from "~/utils/uploadthing";
 
 export function useUploadFiles() {

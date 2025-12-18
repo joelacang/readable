@@ -1,7 +1,6 @@
 import DetailInfo from "~/components/detail-info";
 import { QueryStateHandler } from "~/components/query-state-handler";
 import { Avatar, AvatarImage } from "~/components/ui/avatar";
-import DetailContainer from "~/features/page/components/detail-container";
 import { api } from "~/trpc/react";
 
 interface Props {
@@ -32,7 +31,7 @@ const AuthorDetails = ({ authorId }: Props) => {
               src={author.imageUrl ?? "/images/avatar-placeholder.jpg"}
             />
           </Avatar>
-          <div className="space-y-3 py-8">
+          <div className="w-full space-y-3 py-8">
             <DetailInfo title="Name" description={author.name} />
             <DetailInfo title="Biography" description={author.biography} />
             <div className="grid grid-cols-2">

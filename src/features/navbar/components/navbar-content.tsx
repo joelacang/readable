@@ -1,15 +1,7 @@
 "use client";
-import {
-  ChevronDownIcon,
-  HeartIcon,
-  MenuIcon,
-  SearchIcon,
-  ShoppingCartIcon,
-} from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import Logo from "~/components/logo";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import BrowseCategoryDropdownMenu from "~/features/categories/components/category-browse-dropdown-menu";
 import UserDropdownMenu from "~/features/users/components/user-dropdown-menu";
 import { useIsMobile } from "~/hooks/use-mobile";

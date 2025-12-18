@@ -78,9 +78,11 @@ const OrganizationForm = () => {
   });
 
   const onSubmit = (values: CreateOrgFormType) => {
-    const newAddress = isEmptyAddress(values.address)
-      ? undefined
-      : values.address;
+    const newAddress = values.address
+      ? isEmptyAddress(values.address)
+        ? undefined
+        : values.address
+      : undefined;
 
     const createOrgToast = toast.loading(`Creating Organization...`);
     onPending();

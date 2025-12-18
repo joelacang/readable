@@ -1,10 +1,4 @@
-import {
-  AlertTriangleIcon,
-  BookIcon,
-  ChevronDownIcon,
-  LibraryIcon,
-  XIcon,
-} from "lucide-react";
+import { AlertTriangleIcon, ChevronDownIcon, LibraryIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import {

@@ -148,6 +148,7 @@ export const OrderPreviewSelection = {
   },
 } as const;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const orderPreviewSelect = Prisma.validator()(OrderPreviewSelection);
 
 export type OrderPreviewSelected = Prisma.OrderGetPayload<{

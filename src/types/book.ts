@@ -1,5 +1,7 @@
 import type { BookFormat, BookStatus } from "@prisma/client";
-import type { AgeRating, LinkDetailType } from "./component";
+import type { LinkDetailType } from "./component";
+import type { BookRating } from "./review";
+import type { GroupedSalesUnits } from "./order";
 
 export type BookDetail = {
   id: string;
@@ -43,21 +45,9 @@ export type BookDetail = {
   series: LinkDetailType[];
   tags: LinkDetailType[];
   variants: BookVariant[];
-  reviews: Array<{
-    id: string;
-    rating: number;
-    title: string | null;
-    content: string | null;
-    comment?: string;
-    createdAt: Date;
-    user: {
-      id: string;
-      name: string | null;
-      image?: string | null;
-    };
-  }>;
   collections: LinkDetailType[];
   wishlistId?: string | null;
+  rating?: BookRating;
 };
 
 export type BookPreview = {
@@ -71,6 +61,11 @@ export type BookPreview = {
   images: { id: string; url: string }[];
   variants: BookVariant[];
   wishlistId?: string | null;
+  featuredId?: string | null;
+  rating?: {
+    average: number;
+    totalReviews: number;
+  } | null;
 };
 
 export type BookConfirmDetails = {
@@ -109,6 +104,10 @@ export type BookSummary = {
     name: string;
     slug: string;
   }[];
+  variants?: {
+    format: string;
+    price: number;
+  }[];
 };
 
 export type MonthlySalesData = {
@@ -124,7 +123,7 @@ export type BookStats = {
   totalReviews: number;
   averageRating: number;
   totalStocks: number;
-  monthlyPerformance: MonthlySalesData[];
+  monthlyPerformance: GroupedSalesUnits[];
 };
 
 export enum AdminView {

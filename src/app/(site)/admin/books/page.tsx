@@ -3,7 +3,6 @@ import BookLimitSelect from "~/features/books/components/book-limit-select";
 import BookList from "~/features/books/components/book-list";
 import FilterSidebar from "~/features/books/components/filter-sidebar";
 import DashboardPage from "~/features/dashboard/components/dashboard-page";
-import { useIsMobile } from "~/hooks/use-mobile";
 
 const BooksAdminPage = () => {
   return (

@@ -7,14 +7,12 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import UserAvatar from "./user-avatar";
-import type { UserType } from "~/types/users";
 import {
   LayoutDashboardIcon,
   LibraryIcon,
   ListIcon,
   LogOutIcon,
   MessageCircleIcon,
-  PlusIcon,
   SettingsIcon,
   StoreIcon,
   UserIcon,
@@ -27,7 +25,6 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import SignInButton from "./sign-in-button";
 import { usePathname, useRouter } from "next/navigation";
-import { useCategoryDialog } from "~/features/categories/hooks/use-category-dialog";
 import { Skeleton } from "~/components/ui/skeleton";
 
 const UserDropdownMenu = () => {

@@ -2,7 +2,7 @@
 
 import { type ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
-import { STATUS_CODES } from "node:http";
+
 import TableCell from "~/components/table/table-cell";
 import TableHeader from "~/components/table/table-header";
 import { buttonVariants } from "~/components/ui/button";
@@ -19,7 +19,7 @@ export const orderColumns: ColumnDef<OrderPreviewType>[] = [
       return (
         <TableCell isCentered>
           <Link
-            href={`/orders?ref=${row.original.refCode}`}
+            href={`/user/orders/${row.original.refCode}`}
             className={cn(
               "text-primary font-semibold",
               buttonVariants({ variant: "link" }),

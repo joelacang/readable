@@ -70,8 +70,6 @@ const SignUpForm = () => {
         },
       },
     );
-
-    setIsLoading(false);
   };
   return (
     <Form {...form}>

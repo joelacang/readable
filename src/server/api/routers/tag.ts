@@ -1,7 +1,6 @@
 import z from "zod";
 import { adminProcedure, createTRPCRouter, publicProcedure } from "../trpc";
 import { sanitizeInput } from "~/utils/get-values";
-import { TRPCError } from "@trpc/server";
 
 export const tagRouter = createTRPCRouter({
   create: adminProcedure

@@ -130,7 +130,7 @@ const CartItems = () => {
           {/* Checkout button */}
           <Button
             className="w-full"
-            disabled={isCheckingOut}
+            disabled={isPending}
             onClick={handleCheckout}
           >
             {isCheckingOut && <Loader2Icon className="animate-spin" />}

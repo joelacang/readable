@@ -1,4 +1,3 @@
-import type { BookEditData } from "~/zod-schemas/book";
 import DashboardHeader from "./dashboard-header";
 
 interface DashboardPageProps {

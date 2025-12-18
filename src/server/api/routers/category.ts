@@ -7,7 +7,6 @@ import { TRPCError } from "@trpc/server";
 import { generateSlug } from "~/utils/get-values";
 import type { CategoryDetailType } from "~/types/categories";
 import z from "zod";
-import { Input } from "~/components/ui/input";
 
 export const categoryRouter = createTRPCRouter({
   create: adminProcedure
@@ -61,7 +60,6 @@ export const categoryRouter = createTRPCRouter({
 
   getCategories: publicProcedure.query(async ({ ctx }) => {
     const categoriesData = await ctx.db.category.findMany({
-      orderBy: { name: "asc" },
       select: {
         id: true,
         name: true,

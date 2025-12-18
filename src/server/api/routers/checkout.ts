@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { stripe } from "~/utils/stripe";
-import { multiSessionClient } from "better-auth/client/plugins";
 
 export const checkoutRouter = createTRPCRouter({
   create: protectedProcedure.mutation(async ({ ctx }) => {

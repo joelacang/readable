@@ -4,7 +4,6 @@ import { generateSlug } from "~/utils/get-values";
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import type { UserPreviewType } from "~/types/users";
-import { auth } from "~/lib/auth";
 import type { AuthorDetailType } from "~/types/author";
 
 export const authorRouter = createTRPCRouter({

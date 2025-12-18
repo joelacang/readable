@@ -18,7 +18,9 @@ const AuthorDetailDialog = () => {
             <DialogTitle>Author Details</DialogTitle>
           </DialogHeader>
         </DialogHeader>
-        {authorId && <AuthorDetails authorId={authorId} />}
+        <div className="w-full">
+          {authorId && <AuthorDetails authorId={authorId} />}
+        </div>
       </DialogContent>
     </Dialog>
   );

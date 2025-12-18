@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { MinusIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import toast from "react-hot-toast";

@@ -7,6 +7,7 @@ import { api } from "~/trpc/react";
 import { ModeType } from "~/types/component";
 import { OrdersDataTable } from "./table/data-table";
 import { orderColumns } from "./table/columns";
+import OrderPreviewCard from "./order-preview-card";
 
 interface Props {
   userId?: string | null;
@@ -47,7 +48,14 @@ const UserOrders = ({ userId = null }: Props) => {
 
   return (
     <div>
-      <OrdersDataTable columns={orderColumns} data={orders} />
+      <div className="flex flex-col gap-4 lg:hidden">
+        {orders.map((order) => (
+          <OrderPreviewCard key={order.id} order={order} />
+        ))}
+      </div>
+      <div className="hidden max-w-[calc(100vw-4rem)] px-4 lg:flex">
+        <OrdersDataTable columns={orderColumns} data={orders} />
+      </div>
     </div>
   );
 };

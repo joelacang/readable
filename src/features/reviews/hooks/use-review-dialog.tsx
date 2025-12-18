@@ -1,4 +1,3 @@
-import type { BookFormat } from "@prisma/client";
 import { create } from "zustand";
 import type { OrderItemType } from "~/types/order";
 

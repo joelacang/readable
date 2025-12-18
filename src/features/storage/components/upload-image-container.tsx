@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useRef } from "react";
 import EmptyImages from "./empty-images";
 import ImagePreview from "./image-preview";
 import { motion, AnimatePresence } from "framer-motion";

@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { headers } from "next/headers";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
 import { auth } from "~/lib/auth";
 
 const f = createUploadthing();
@@ -20,7 +19,7 @@ export const ourFileRouter = {
     },
   })
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ req }) => {
+    .middleware(async () => {
       // This code runs on your server before upload
       const session = await auth.api.getSession({
         headers: await headers(),

@@ -5,12 +5,7 @@ import {
   MailIcon,
   MapIcon,
 } from "lucide-react";
-import type {
-  FieldError,
-  FieldErrors,
-  FieldErrorsImpl,
-  Merge,
-} from "react-hook-form";
+import type { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 import InputIcon from "~/components/input-icon";
 import {
   Select,
@@ -48,8 +43,13 @@ const AddressForm = ({ value, onChange, isPending = false, errors }: Props) => {
         <InputIcon
           placeholder="Enter Address Line 1 *"
           icon={HomeIcon}
-          value={value.line1}
-          onChange={(e) => onChange({ ...value, line1: e.currentTarget.value })}
+          value={value?.line1 ?? ""}
+          onChange={(e) =>
+            onChange({
+              ...value,
+              line1: e.currentTarget.value,
+            })
+          }
           disabled={isPending}
           aria-invalid={!!errors?.line1}
         />
@@ -62,7 +62,7 @@ const AddressForm = ({ value, onChange, isPending = false, errors }: Props) => {
         <InputIcon
           placeholder="Enter Address Line 2 (optional)"
           icon={Building2Icon}
-          value={value.line2 ?? ""}
+          value={value?.line2 ?? ""}
           onChange={(e) => onChange({ ...value, line2: e.currentTarget.value })}
           disabled={isPending}
           aria-invalid={!!errors?.line2}
@@ -76,8 +76,12 @@ const AddressForm = ({ value, onChange, isPending = false, errors }: Props) => {
         <InputIcon
           placeholder="Enter City *"
           icon={LandmarkIcon}
-          value={value.city}
-          onChange={(e) => onChange({ ...value, city: e.currentTarget.value })}
+          value={value?.city ?? ""}
+          onChange={(e) => {
+            if (e.currentTarget.value) {
+              onChange({ ...value, city: e.currentTarget.value });
+            }
+          }}
           disabled={isPending}
           aria-invalid={!!errors?.city}
         />
@@ -91,7 +95,7 @@ const AddressForm = ({ value, onChange, isPending = false, errors }: Props) => {
           <InputIcon
             placeholder="Enter State (optional)"
             icon={MapIcon}
-            value={value.state ?? ""}
+            value={value?.state ?? ""}
             onChange={(e) =>
               onChange({ ...value, state: e.currentTarget.value })
             }

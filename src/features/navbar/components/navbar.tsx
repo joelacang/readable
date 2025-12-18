@@ -1,5 +1,4 @@
 import type React from "react";
-import NavbarContent from "./navbar-content";
 
 interface NavbarProps {
   children: React.ReactNode;

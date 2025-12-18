@@ -12,6 +12,8 @@ import { useIsMobile } from "~/hooks/use-mobile";
 import type React from "react";
 import WishlistToggleButton from "~/features/wishlist/components/wishlist-toggle-button";
 import { useAddToCartDialog } from "~/features/cart/hooks/use-add-to-cart-dialog";
+import { StarRating } from "~/components/star-rating";
+import AuthorButton from "~/features/authors/components/author-button";
 
 interface Props {
   book: BookPreview;
@@ -29,7 +31,7 @@ const BookListItem = ({ book, isAdmin = false, compact = false }: Props) => {
       className={cn(
         compact
           ? "pointer-events-none gap-4 rounded-lg border px-2 py-4"
-          : "gap-4 p-2 lg:gap-8 lg:p-4",
+          : "gap-4 px-2 py-4 lg:gap-8 lg:p-4",
         "hover:bg-muted/20 active:bg-muted/60 relative flex w-full flex-row items-center justify-center transition-colors",
       )}
     >
@@ -76,7 +78,7 @@ const BookListItem = ({ book, isAdmin = false, compact = false }: Props) => {
           <div>
             <h2
               className={cn(
-                compact ? "text-base" : "text-sm sm:text-lg",
+                compact ? "text-base" : "text-base sm:text-lg",
                 "text-primary cursor-pointer leading-tight font-semibold break-words hover:underline hover:underline-offset-2",
               )}
               onClick={() =>
@@ -87,28 +89,37 @@ const BookListItem = ({ book, isAdmin = false, compact = false }: Props) => {
             >
               {book.title}
             </h2>
+
             {/* Authors */}
+
             {book.authors.length > 0 && (
               <div className="flex flex-wrap items-center gap-1">
                 <span className="text-muted-foreground text-xs sm:text-sm">
                   by
                 </span>
-                {book.authors.map((author, index) => (
-                  <span
-                    key={author.id}
-                    className="text-xs font-medium sm:text-sm"
-                  >
-                    {author.name}
-                    {index < book.authors.length - 1 && ","}
-                  </span>
+                {book.authors.map((author) => (
+                  <AuthorButton key={author.id} author={author} />
                 ))}
               </div>
             )}
           </div>
 
           {/* Categories - Hidden on mobile, shown on tablet+ */}
+          {/* Rating  */}
+          {book.rating && (
+            <div className="flex flex-row items-center justify-start gap-3">
+              <StarRating
+                value={Math.round(book.rating.average)}
+                compact
+                disabled
+              />
+              <p className="text-sm font-medium">
+                ({book.rating.totalReviews})
+              </p>
+            </div>
+          )}
 
-          <>
+          <div className="pb-4">
             {book.categories.length > 0 && !compact && (
               <div className="hidden flex-wrap gap-1 md:flex">
                 {book.categories.map((category) => (
@@ -121,7 +132,7 @@ const BookListItem = ({ book, isAdmin = false, compact = false }: Props) => {
                 ))}
               </div>
             )}
-          </>
+          </div>
 
           {/* Description - Hidden on mobile */}
           <>

@@ -1,7 +1,9 @@
-import type { BookFormat, Prisma } from "@prisma/client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Prisma, type BookFormat } from "@prisma/client";
 import type { BookPreview } from "~/types/book";
 import type { FormIdentityType } from "~/types/component";
-import { db } from "../db";
+import { getBookRating } from "./review";
+import type { BookRating } from "~/types/review";
 
 export enum BOOK_RELATION {
   AUTHOR,
@@ -307,60 +309,14 @@ export async function getBookPreview({
 }): Promise<BookPreview | null> {
   const book = await transaction.book.findUnique({
     where: { id: bookId },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      slug: true,
-      status: true,
-      authors: {
-        select: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
-        },
-      },
-      categories: {
-        select: {
-          category: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-            },
-          },
-        },
-      },
-      variants: {
-        select: {
-          id: true,
-          format: true,
-          title: true,
-          price: true,
-          salePrice: true,
-          stock: true,
-        },
-      },
-      images: {
-        select: {
-          image: {
-            select: {
-              id: true,
-              url: true,
-            },
-          },
-        },
-      },
-    },
+    select: bookPreviewPrismaSelection,
   });
 
   if (!book) return null;
 
   const { images, categories, authors, variants, ...others } = book;
+
+  const rating = await getBookRating({ bookId });
 
   return {
     ...others,
@@ -375,5 +331,109 @@ export async function getBookPreview({
       salePrice: v.salePrice?.toNumber() ?? null,
       stock: v.stock ?? null,
     })),
+    rating,
   } satisfies BookPreview;
+}
+
+export async function isFeaturedActive({
+  bookId,
+  transaction,
+}: {
+  bookId: string;
+  transaction: Prisma.TransactionClient;
+}): Promise<{ isActive: boolean; featuredId?: string }> {
+  const activeFeatured = await transaction.featuredBook.findFirst({
+    where: { bookId, expiresAt: { gt: new Date() } },
+    select: { id: true },
+  });
+
+  return { isActive: activeFeatured !== null, featuredId: activeFeatured?.id };
+}
+
+export const bookPreviewPrismaSelection = {
+  id: true,
+  title: true,
+  slug: true,
+  description: true,
+  status: true,
+  authors: {
+    select: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    },
+  },
+  categories: {
+    select: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+        },
+      },
+    },
+  },
+  images: {
+    select: {
+      image: {
+        select: {
+          id: true,
+          url: true,
+          name: true,
+        },
+      },
+    },
+  },
+  variants: {
+    select: {
+      id: true,
+      format: true,
+      title: true,
+      price: true,
+      salePrice: true,
+      stock: true,
+    },
+  },
+};
+
+const bookPreviewSelect = Prisma.validator()(bookPreviewPrismaSelection);
+
+export type BookPreviewSelected = Prisma.BookGetPayload<{
+  select: typeof bookPreviewSelect;
+}>;
+
+export async function convertToBookPreviewType({
+  rawData,
+  showRating = false,
+}: {
+  rawData: BookPreviewSelected;
+  showRating?: boolean;
+}): Promise<BookPreview> {
+  const { authors, categories, variants, images, ...otherFields } = rawData;
+  let rating: BookRating | null = null;
+
+  if (showRating) {
+    rating = await getBookRating({ bookId: rawData.id });
+  }
+
+  return {
+    ...otherFields,
+    authors: authors.map((author) => author.author),
+    categories: categories.map((category) => category.category),
+    images: images.map((image) => image.image),
+    variants: variants.map((v) => ({
+      id: v.id,
+      title: v.title,
+      price: v.price.toNumber(),
+      salePrice: v.salePrice?.toNumber() ?? null,
+      format: v.format,
+      stock: v.stock,
+    })),
+    rating,
+  };
 }

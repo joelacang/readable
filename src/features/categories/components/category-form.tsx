@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageIcon, Loader2Icon, PlusIcon, SaveIcon } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type z from "zod";
 import { Button } from "~/components/ui/button";
@@ -19,8 +19,6 @@ import { createCategorySchema } from "~/zod-schemas/category";
 import { useCategoryDialog } from "../hooks/use-category-dialog";
 import { api } from "~/trpc/react";
 import toast from "react-hot-toast";
-import OptionalFieldText from "~/components/optional-field-text";
-import InfoPopover from "~/components/info-popover";
 import FieldLabelSection from "~/features/form/components/field-label-section";
 import FormActionButton from "~/components/form-action-button";
 

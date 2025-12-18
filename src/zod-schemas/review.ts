@@ -1,4 +1,3 @@
-import { ReviewStatus } from "@prisma/client";
 import z from "zod";
 
 export const createReviewSchema = z.object({

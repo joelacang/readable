@@ -86,6 +86,8 @@ export const imageRouter = createTRPCRouter({
 
           return deletedImage.id;
         });
+
+        return results;
       } catch (error) {
         console.error("Can't delete images", error);
         throw new TRPCError({

@@ -1,4 +1,3 @@
-import { SidebarGroup, SidebarGroupContent } from "~/components/ui/sidebar";
 import CategoryMenus from "~/features/categories/components/category-menus";
 
 const FilterSidebar = () => {

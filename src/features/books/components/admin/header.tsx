@@ -1,7 +1,6 @@
-import { CopyIcon, EditIcon, ImageIcon, Trash2Icon, XIcon } from "lucide-react";
+import { ImageIcon, XIcon } from "lucide-react";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
-import BookAdminDropdownMenu from "./dropdown-menu";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { useBook } from "~/providers/book-provider";
 import AuthorButton from "~/features/authors/components/author-button";
@@ -34,7 +33,7 @@ const BookAdminHeader = () => {
               {book.title}
             </h1>
             <div className="flex flex-wrap gap-2">
-              {book.authors.map((a, index) => (
+              {book.authors.map((a) => (
                 <AuthorButton key={a.id} author={a} />
               ))}
             </div>

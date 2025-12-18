@@ -11,17 +11,22 @@ import type {
   BookDetail,
   BookPreview,
   BookStats,
-  MonthlySalesData,
+  BookSummary,
 } from "~/types/book";
 import { getAllDescendantCategoryIds } from "~/server/helpers/category";
 import { Decimal } from "@prisma/client/runtime/library";
 import type { StoredImageType } from "~/features/storage/hooks/use-temp-images";
 import {
   BOOK_RELATION,
+  bookPreviewPrismaSelection,
+  convertToBookPreviewType,
   getBookPreview,
+  isFeaturedActive,
   updateRelation,
 } from "~/server/helpers/book";
-import { getReviewInfo } from "~/server/helpers/review";
+import { getBookRating } from "~/server/helpers/review";
+import { addDays } from "date-fns";
+import type { GroupedSalesUnits } from "~/types/order";
 
 export const bookRouter = createTRPCRouter({
   create: adminProcedure
@@ -356,24 +361,6 @@ export const bookRouter = createTRPCRouter({
               stock: true,
             },
           },
-          reviews: {
-            select: {
-              id: true,
-              rating: true,
-              title: true,
-              content: true,
-              createdAt: true,
-              user: {
-                select: {
-                  id: true,
-                  name: true,
-                  image: true,
-                },
-              },
-            },
-            orderBy: { createdAt: "desc" },
-            take: 5,
-          },
           collections: {
             select: {
               collection: {
@@ -385,6 +372,16 @@ export const bookRouter = createTRPCRouter({
               },
             },
           },
+          ...(ctx.session?.user.id && {
+            wishlists: {
+              where: {
+                userId: ctx.session.user.id,
+              },
+              select: {
+                id: true,
+              },
+            },
+          }),
         },
       });
 
@@ -397,10 +394,12 @@ export const bookRouter = createTRPCRouter({
         categories,
         collections,
         createdBy,
-        reviews,
         variants,
+        wishlists,
         ...others
       } = book;
+
+      const rating = await getBookRating({ bookId: book.id });
 
       const bookDetail: BookDetail = {
         ...others,
@@ -416,7 +415,6 @@ export const bookRouter = createTRPCRouter({
         createdBy,
         averageRating: others.averageRating?.toNumber() ?? 0,
         collections: collections.map((c) => c.collection),
-        reviews,
         variants: variants.map((v) => ({
           ...v,
           price: v.price.toNumber(),
@@ -429,6 +427,8 @@ export const bookRouter = createTRPCRouter({
             url: img.image.url,
           };
         }),
+        wishlistId: wishlists[0]?.id,
+        rating,
       };
 
       return bookDetail;
@@ -467,52 +467,12 @@ export const bookRouter = createTRPCRouter({
               }
             : {},
         select: {
-          id: true,
-          title: true,
-          slug: true,
-          description: true,
-          status: true,
-          authors: {
-            select: {
-              author: {
-                select: {
-                  id: true,
-                  name: true,
-                  slug: true,
-                },
+          ...bookPreviewPrismaSelection,
+          featuredBooks: {
+            where: {
+              expiresAt: {
+                gt: new Date(),
               },
-            },
-          },
-          categories: {
-            select: {
-              category: {
-                select: {
-                  id: true,
-                  name: true,
-                  slug: true,
-                },
-              },
-            },
-          },
-          images: {
-            select: {
-              image: {
-                select: {
-                  id: true,
-                  url: true,
-                  name: true,
-                },
-              },
-            },
-          },
-          variants: {
-            select: {
-              id: true,
-              format: true,
-              title: true,
-              price: true,
-              salePrice: true,
-              stock: true,
             },
           },
           ...(ctx.session?.user.id && {
@@ -532,6 +492,7 @@ export const bookRouter = createTRPCRouter({
       });
 
       let categoryName: string | null = null;
+
       if (input.categoryId) {
         const category = await ctx.db.category.findUnique({
           where: { id: input.categoryId },
@@ -540,32 +501,21 @@ export const bookRouter = createTRPCRouter({
 
         categoryName = category?.name ?? null;
       }
-      const books: BookPreview[] = booksData.map((book) => {
-        const {
-          authors,
-          categories,
-          variants,
-          images,
-          wishlists,
-          ...otherFields
-        } = book;
 
-        return {
-          ...otherFields,
-          authors: authors.map((author) => author.author),
-          categories: categories.map((category) => category.category),
-          images: images.map((image) => image.image),
-          variants: variants.map((v) => ({
-            id: v.id,
-            title: v.title,
-            price: v.price.toNumber(),
-            salePrice: v.salePrice?.toNumber() ?? null,
-            format: v.format,
-            stock: v.stock,
-          })),
-          wishlistId: wishlists?.[0]?.id ?? null,
-        } satisfies BookPreview;
-      });
+      const books: BookPreview[] = await Promise.all(
+        booksData.map(async (book) => {
+          const bookPreview = await convertToBookPreviewType({
+            rawData: book,
+            showRating: true,
+          });
+
+          return {
+            ...bookPreview,
+            wishlistId: book.wishlists?.[0]?.id ?? null,
+            featuredId: book.featuredBooks.map((f) => f.id)?.[0],
+          } satisfies BookPreview;
+        }),
+      );
 
       return { books, totalCount, categoryName };
     }),
@@ -697,82 +647,120 @@ export const bookRouter = createTRPCRouter({
             mode: "insensitive",
           },
         },
-        include: {
-          authors: {
-            select: {
-              author: true,
-            },
-          },
-          categories: {
-            select: {
-              category: true,
-            },
-          },
-          variants: true,
-          images: {
-            select: {
-              image: true,
-            },
-          },
-        },
+        select: bookPreviewPrismaSelection,
       });
 
-      const books: BookPreview[] = results.map((book) => {
-        const {
-          authors,
-          categories,
-          variants,
-          images,
-          id,
-          title,
-          slug,
-          status,
-        } = book;
-
-        return {
-          id,
-          title,
-          slug,
-          status,
-          authors: authors.map((a) => ({
-            id: a.author.id,
-            name: a.author.name,
-            slug: a.author.slug,
-          })),
-          categories: categories.map((c) => ({
-            id: c.category.id,
-            name: c.category.name,
-            slug: c.category.slug,
-          })),
-          variants: variants.map((v) => ({
-            id: v.id,
-            title: v.title,
-            format: v.format,
-            price: v.price.toNumber(),
-            salePrice: v.salePrice?.toNumber(),
-          })),
-          images: images.map((i) => ({
-            id: i.image.id,
-            url: i.image.url,
-          })),
-        };
-      });
+      const books: BookPreview[] = await Promise.all(
+        results.map((book) => {
+          return convertToBookPreviewType({ rawData: book });
+        }),
+      );
 
       return books;
     }),
+
+  getMostPopularBooks: publicProcedure.query(async ({ ctx }) => {
+    const popularBooks = await ctx.db.orderItem.groupBy({
+      by: ["bookId"],
+      where: {
+        order: {
+          status: {
+            in: ["PAID", "DELIVERED"],
+          },
+        },
+      },
+      _count: {
+        bookId: true,
+      },
+      _sum: {
+        quantity: true,
+      },
+      orderBy: {
+        _sum: {
+          quantity: "desc",
+        },
+      },
+      take: 8,
+    });
+
+    const bookIds = popularBooks
+      .map((b) => b.bookId)
+      .filter((id) => id !== null);
+
+    const books = await ctx.db.book.findMany({
+      where: {
+        id: {
+          in: bookIds,
+        },
+      },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        images: {
+          select: {
+            image: true,
+          },
+        },
+        authors: {
+          select: {
+            author: true,
+          },
+        },
+        variants: true,
+      },
+    });
+
+    const booksWithCountsOrdered = bookIds
+      .map((id) => {
+        const book = books.find((b) => b.id === id);
+        const sold =
+          popularBooks.find((b) => b.bookId === id)?._sum.quantity ?? 0;
+
+        if (!book) return null;
+
+        const { authors, images, variants, ...otherFields } = book;
+
+        return {
+          book: {
+            ...otherFields,
+            authors: authors.map((a) => ({
+              id: a.author.id,
+              name: a.author.name,
+              slug: a.author.slug,
+            })),
+            imagesUrl: images.map((i) => i.image.url),
+            variants: variants.map((v) => ({
+              format: v.format,
+              price: v.price.toNumber(),
+            })),
+          },
+          totalSold: sold,
+        };
+      })
+      .filter((b) => b !== null);
+
+    return booksWithCountsOrdered satisfies {
+      book: BookSummary;
+      totalSold: number;
+    }[];
+  }),
 
   getBookDashboardStats: adminProcedure
     .input(z.object({ bookId: z.string() }))
     .query(async ({ ctx, input }) => {
       const orderStats = await ctx.db.orderItem.aggregate({
-        where: { bookId: input.bookId },
+        where: {
+          bookId: input.bookId,
+          order: { status: { in: ["PAID", "DELIVERED", "IN_TRANSIT"] } },
+        },
         _sum: {
           subTotal: true,
           quantity: true,
         },
       });
 
-      const ratingStats = await getReviewInfo({ bookId: input.bookId });
+      const ratingStats = await getBookRating({ bookId: input.bookId });
 
       const totalStock = await ctx.db.bookVariant.aggregate({
         where: { bookId: input.bookId },
@@ -784,20 +772,20 @@ export const bookRouter = createTRPCRouter({
       const sixMonthsAgo = new Date();
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5); // Include current month, so 5 months before
 
-      const salesByMonth = await ctx.db.$queryRaw<MonthlySalesData[]>`
+      const salesByMonth = await ctx.db.$queryRaw<GroupedSalesUnits[]>`
 WITH months AS (
-  SELECT to_char(date_trunc('month', CURRENT_DATE) - (interval '1 month' * generate_series(0, 5)), 'YYYY-MM') AS month
+  SELECT to_char(date_trunc('month', CURRENT_DATE) - (interval '1 month' * generate_series(0, 5)), 'YYYY-MM') AS period
 )
 SELECT
-  months.month,
+  months.period,
   COALESCE(SUM(o."subTotal"), 0) AS revenue,
-  COALESCE(SUM(o."quantity"), 0) AS units_sold
+  COALESCE(SUM(o."quantity")::INT, 0) AS units
 FROM months
 LEFT JOIN "OrderItem" o
-  ON to_char(date_trunc('month', o."createdAt"), 'YYYY-MM') = months.month
+  ON to_char(date_trunc('month', o."createdAt"), 'YYYY-MM') = months.period
   AND o."bookId" = ${input.bookId}
-GROUP BY months.month
-ORDER BY months.month;
+GROUP BY months.period
+ORDER BY months.period;
 `;
 
       return {
@@ -805,9 +793,119 @@ ORDER BY months.month;
         totalSales: orderStats._sum.subTotal?.toNumber() ?? 0,
         totalUnitsSold: orderStats._sum.quantity ?? 0,
         totalReviews: ratingStats.totalReviews,
-        averageRating: ratingStats.averageRatings,
+        averageRating: ratingStats.average,
         totalStocks: totalStock._sum.stock ?? 0,
         monthlyPerformance: salesByMonth,
       } satisfies BookStats;
     }),
+
+  addToFeaturedBook: adminProcedure
+    .input(z.object({ bookId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const results = await ctx.db.$transaction(async (tx) => {
+        try {
+          const activeFeatured = await isFeaturedActive({
+            bookId: input.bookId,
+            transaction: tx,
+          });
+
+          if (activeFeatured.isActive && activeFeatured.featuredId) {
+            // Already active — do nothing or return
+            return null;
+          }
+
+          if (!activeFeatured.isActive && activeFeatured.featuredId) {
+            // Expired, but record exists — update its expiresAt
+            const updated = await tx.featuredBook.update({
+              where: { id: activeFeatured.featuredId },
+              data: {
+                expiresAt: addDays(new Date(), 60),
+              },
+            });
+
+            return updated;
+          }
+
+          const featuredBook = await tx.featuredBook.create({
+            data: {
+              bookId: input.bookId,
+              addedById: ctx.session.user.id,
+              expiresAt: addDays(new Date(), 60),
+            },
+          });
+
+          return featuredBook;
+        } catch (error) {
+          console.error(`Unable to add to featured books`, error);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Unable to add book to Featured Books",
+            cause: error,
+          });
+        }
+      });
+
+      return results;
+    }),
+
+  removeFromFeaturedBook: adminProcedure
+    .input(z.object({ bookId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const results = await ctx.db.$transaction(async (tx) => {
+          const activeFeatured = await isFeaturedActive({
+            bookId: input.bookId,
+            transaction: tx,
+          });
+
+          if (!activeFeatured.featuredId)
+            throw new TRPCError({
+              code: "UNPROCESSABLE_CONTENT",
+              message: "Book is not featured.",
+            });
+
+          const deletedFeatured = await tx.featuredBook.delete({
+            where: {
+              id: activeFeatured.featuredId,
+            },
+          });
+
+          return deletedFeatured;
+        });
+
+        return results;
+      } catch (error) {
+        console.error("Unable to remove from featured books", error);
+        throw new TRPCError({
+          code: "UNPROCESSABLE_CONTENT",
+          message: "Error removing from featured books.",
+          cause: error,
+        });
+      }
+    }),
+
+  getFeaturedBooks: publicProcedure.query(async ({ ctx }) => {
+    const data = await ctx.db.featuredBook.findMany({
+      where: { expiresAt: { gt: new Date() } },
+      select: {
+        id: true,
+        book: {
+          select: bookPreviewPrismaSelection,
+        },
+      },
+    });
+
+    const featuredBooks: BookPreview[] = await Promise.all(
+      data.map(async (rawData) => {
+        const bookPreview: BookPreview = await convertToBookPreviewType({
+          rawData: rawData.book,
+          showRating: true,
+        });
+
+        return bookPreview;
+      }),
+    );
+
+    return featuredBooks;
+  }),
 });

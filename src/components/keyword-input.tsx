@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, type HTMLProps } from "react";
 import { Input } from "~/components/ui/input";
 

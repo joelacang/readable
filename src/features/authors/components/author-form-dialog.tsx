@@ -7,10 +7,9 @@ import {
 } from "~/components/ui/dialog";
 import { useAuthorFormDialog } from "../hooks/use-author-form-dialog";
 import AuthorForm from "./author-form";
-import { Description } from "@radix-ui/react-dialog";
 import AuthorAddedConfirmation from "./author-add-confirmation";
 import { useConfirmationAlert } from "~/features/dialogs/hooks/use-confirm-dialog";
-import { HelpCircleIcon, XCircle } from "lucide-react";
+import { HelpCircleIcon } from "lucide-react";
 
 const getAuthorDialogStrings = (mode: string) => {
   switch (mode) {
@@ -63,6 +62,7 @@ const AuthorFormDialog = () => {
           "Are you sure you want to close the form? All unsaved changes will be lost.",
         icon: HelpCircleIcon,
         mode: "destructive",
+        enableConfirmation: false,
         action: () => {
           onClose(); // Actually close the dialog
         },

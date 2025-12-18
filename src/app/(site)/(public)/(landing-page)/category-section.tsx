@@ -7,12 +7,7 @@ import CategoryCard from "~/features/categories/components/category-card";
 import { Button } from "~/components/ui/button";
 
 const CategorySection = () => {
-  const {
-    data: categories,
-    isPending,
-    isError,
-    error,
-  } = api.category.getCategories.useQuery();
+  const { data: categories } = api.category.getCategories.useQuery();
 
   return (
     <SectionContainer
@@ -21,10 +16,10 @@ const CategorySection = () => {
       description="Discover your next favorite book from our carefully curated collection spanning every category"
       iconColor="bg-teal-500"
     >
-      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-4">
-        {categories?.map((category) => (
-          <CategoryCard key={category.id} category={category} />
-        ))}
+      <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
+        {categories?.map((category) => {
+          return <CategoryCard key={category.id} category={category} />;
+        })}
       </div>
 
       <div className="mt-12 text-center">
